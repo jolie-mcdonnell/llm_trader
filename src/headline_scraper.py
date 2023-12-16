@@ -4,24 +4,58 @@ from bs4 import BeautifulSoup
 def scrape_headlines(site, keywords):
     url = site['url']
     response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    headlines = soup.find_all('h3')
-    matching_headlines = []
-    for headline in headlines:
-        for keyword in keywords:
-            if keyword.lower() in headline.text.lower():
-                # date = headline.find_next('span', attrs={'data-testid': "todays-date"}).text
-                matching_headlines.append({'headline':headline.text, 'url':url, 'business':keywords[0]})
-                break
-    return matching_headlines
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        headlines = soup.find_all(attrs=site['headline_attrs'])
+        matching_headlines = []
+        for headline in headlines:
+            headline_text = headline.text.strip()
+            for keyword in keywords:
+                if keyword.lower() in headline_text.lower():
+                    date = headline.find_next(attrs=site['date_attrs'])
+                    if date:
+                        date_text = date.text.strip()
+                    else:
+                        date_text = 'Date not found'
+                    description = headline.find_next(attrs=site['description_attrs'])
+                    if description:
+                        description_text = description.text.strip()
+                    else:
+                        description_text = 'Description not found'
+                    matching_headlines.append({'headline':headline_text,
+                                            'description':description_text,
+                                            'date':date_text,
+                                            'url':url,
+                                            'business':keywords[0]})
+                    break
+        return matching_headlines
+    else:
+        print("Failed to retrieve the webpage. Status code:", response.status_code)
 
-nyt_business = {'url': 'https://www.nytimes.com/section/business', 'headline_tag': 'h3'}
-bbc = {'url': 'https://www.bbc.com/news', 'headline_tag': 'h2'}
+nyt = {'url': 'https://www.nytimes.com/section/business', 'headline_attrs': {'class':'css-1kv6qi e15t083i0'}, 'description_attrs': {'class':'css-1pga48a e15t083i1'}, 'date_attrs': {'data-testid':'todays-date'}}
+bbc = {'url': 'https://www.bbc.com/business', 'headline_attrs': {'data-testid': 'card-headline'}, 'description_attrs': {'data-testid': 'card-description'}, 'date_attrs': {'data-testid': 'card-metadata-lastupdated'}}
 
-print(scrape_headlines(nyt_business, ['Netflix', 'NFLX']))
-print(scrape_headlines(nyt_business, ['Activision', 'ATVI']))
-print(scrape_headlines(nyt_business, ['Apple', 'AAPL']))
+sites = [nyt, bbc]
+companies = [['Netflix', 'NFLX'],
+             ['Activision', 'ATVI'],
+             ['Apple', 'AAPL', 'iPhone', 'iPad', 'iMac'],
+             ['Microsoft', 'MSFT'],
+             ['Google', 'GOOG', 'Alphabet', 'GOOGL'],
+             ['Facebook', 'FB', 'Instagram', 'WhatsApp'],
+             ['Amazon', 'AMZN'],
+             ['Tesla', 'TSLA'],
+             ['Twitter', 'TWTR'],
+             ['Intel', 'INTC'],
+             ['AMD', 'Advanced Micro Devices'],
+             ['Nvidia', 'NVDA'],
+             ['Qualcomm', 'QCOM'],
+             ['PayPal', 'PYPL'],
+             ['Square', 'SQ'],
+             ['Shopify', 'SHOP'],
+             ['Etsy', 'ETSY'],
+             ]
 
-print(scrape_headlines(bbc, ['Netflix', 'NFLX']))
-print(scrape_headlines(bbc, ['Activision', 'ATVI']))
-print(scrape_headlines(bbc, ['Apple', 'AAPL']))
+for site in sites:
+    for company in companies:
+        headlines = scrape_headlines(site, company)
+        print(headlines)
