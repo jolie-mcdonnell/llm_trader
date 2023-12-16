@@ -23,7 +23,7 @@ if response.status_code == 200:
         columns = row.find_all('td')
         ticker = columns[0].text.strip()
         name = columns[1].text.strip()
-        sp500_data.append([ticker, name])
+        sp500_data.append({'ticker': ticker, 'name': name, 'keywords': []})
 
     # Print the list of S&P 500 tickers and names
     for item in sp500_data:
