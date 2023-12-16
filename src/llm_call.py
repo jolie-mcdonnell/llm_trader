@@ -27,8 +27,8 @@ def generate_stock_recommendation(headline, company_name, term):
 # TODO: REMOVE 
 if __name__ == "__main__":
     # Example usage
-    headline = "In Search of Cash, Studios Send Old Shows Back to Netflix"
-    company_name = "Netflix"
+    headline = "Lead Levels in Children’s Applesauce May Be Traced to Cinnamon Additive"
+    company_name = "Apple"
     term = "short"
 
     result = generate_stock_recommendation(headline, company_name, term)
