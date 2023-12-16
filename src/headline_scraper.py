@@ -58,27 +58,18 @@ washpo = {'name': 'Washington Post', 'url': 'https://www.washingtonpost.com/busi
 # politico
 
 sites = [nyt, bbc, google, washpo]
-companies = [
-             ['Netflix', 'NFLX'],
-             ['Activision', 'ATVI'],
-             ['Apple', 'AAPL', 'iPhone', 'iPad', 'iMac'],
-             ['Microsoft', 'MSFT'],
-             ['Google', 'GOOG', 'Alphabet', 'GOOGL'],
-             ['Facebook', 'FB', 'Instagram', 'WhatsApp'],
-             ['Amazon', 'AMZN'],
-             ['Tesla', 'TSLA'],
-             ['Twitter', 'TWTR'],
-             ['Intel', 'INTC'],
-             ['AMD', 'Advanced Micro Devices'],
-             ['Nvidia', 'NVDA'],
-             ['Qualcomm', 'QCOM'],
-             ['PayPal', 'PYPL'],
-             ['Square', 'SQ'],
-             ['Shopify', 'SHOP'],
-             ['Etsy', 'ETSY'],
-             ]
+
+company_keywords = [
+    ['Apple', 'AAPL', 'iPhone', 'iPad', 'Mac', 'iCloud'],
+    ['Microsoft', 'MSFT', 'Windows', 'Office', 'Azure'],
+    ['Amazon', 'AMZN', 'AWS', 'Alexa'],
+    ['Alphabet', 'GOOGL', 'GOOG', 'Google', 'YouTube'],
+    ['Meta', 'META', 'Facebook', 'Instagram'],
+    ['Tesla', 'TSLA', 'Elon Musk'],
+]
+
 
 for site in sites:
-    for company in companies:
+    for company in company_keywords:
         headlines = scrape_headlines(site, company)
         print(headlines)
