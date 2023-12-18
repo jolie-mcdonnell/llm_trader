@@ -1,5 +1,13 @@
-import alpaca_trade_api as tradeapi
 import os
+from datetime import datetime
+
+import alpaca_trade_api as tradeapi
+import pandas as pd
+from pytz import timezone
+
+TRADES_MORNING_FILE = "data/trades_morning.csv"
+TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
+TRADES_TEST_FILE = "data/trades_morning_test.csv"
 
 
 def execute_trade(ticker, trade_strategy, dollar_amount):
@@ -35,7 +43,7 @@ def execute_trade(ticker, trade_strategy, dollar_amount):
             num_shares = round(dollar_amount / float(last_trade.price), 0)
 
         else:
-            return "Invalid trade strategy. Please use 'buy' or 'sell'."
+            raise Exception("Invalid trade strategy. Please use 'buy' or 'sell'.")
 
         # Submit the order
         api.submit_order(
@@ -45,17 +53,38 @@ def execute_trade(ticker, trade_strategy, dollar_amount):
             type="market",
         )
 
-        return f"Successfully submitted a {trade_strategy} limit order for {ticker}."
+        print(f"Successfully submitted a {trade_strategy} limit order for {ticker}.")
 
     except Exception as e:
-        return f"Error executing the trade: {str(e)}"
+        print(f"Error executing the trade: {str(e)}")
+
+
+def execute_trades():
+    tz = timezone("EST")
+    current_time = datetime.now(tz).time()
+
+    trades_df = pd.read_csv(TRADES_TEST_FILE)
+
+    # if current execution time is in window #1, read in morning trades file
+    if (current_time >= datetime.strptime("05:50:00", "%H:%M:%S").time()) & (
+        current_time <= datetime.strptime("06:00:00", "%H:%M:%S").time()
+    ):
+        print("time window 1")
+        trades_df = pd.read_csv(TRADES_MORNING_FILE)
+
+    # if current execution time is in window #2, read in afternoon trades file
+    elif (current_time >= datetime.strptime("15:50:00", "%H:%M:%S").time()) & (
+        current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
+    ):
+        print("time window 2")
+        trades_df = pd.read_csv(TRADES_AFTERNOON_FILE)
+
+    else:
+        print("Exception will be raised")
+        # raise Exception("Execution time not in morning or afternoon window")
+
+    trades_df.apply(lambda x: execute_trade(x.ticker, x.strategy, x.amount), axis=1)
 
 
 if __name__ == "__main__":
-    # Example usage
-    ticker = "BYON"
-    trade_strategy = "sell"
-    dollar_amount = 100
-
-    result = execute_trade(ticker, trade_strategy, dollar_amount)
-    print(result)
+    execute_trades()
