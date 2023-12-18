@@ -86,5 +86,6 @@ def execute_trades():
     trades_df.apply(lambda x: execute_trade(x.ticker, x.strategy, x.amount), axis=1)
 
 
+# TODO: delete this
 if __name__ == "__main__":
     execute_trades()
