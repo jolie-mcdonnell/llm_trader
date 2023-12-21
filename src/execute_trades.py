@@ -11,6 +11,16 @@ TRADES_TEST_FILE = "data/trades_morning_test.csv"
 
 
 def execute_trade(ticker, trade_strategy, dollar_amount):
+    """
+    The execute_trade function takes in a ticker symbol, trade strategy (buy or sell), and dollar amount.
+    It then checks the available buying power to ensure there's enough for the trade. If so, it executes
+    the order using Alpaca's API.
+
+    :param ticker: Specify the stock ticker symbol
+    :param trade_strategy: Determine whether to buy or sell the stock
+    :param dollar_amount: Determine how much money to trade
+    """
+
     # Set your Alpaca API key and secret
     api_key = os.getenv("ALPACA_API_KEY")
     api_secret = os.getenv("ALPACA_SECRET_KEY")
@@ -59,31 +69,50 @@ def execute_trade(ticker, trade_strategy, dollar_amount):
         print(f"Error executing the trade: {str(e)}")
 
 
+def execute_trades_handler(trades_file):
+    """
+    The execute_trades_handler function takes in a trades_file, which is a csv file containing the following columns:
+        ticker - The stock symbol of the security to be traded.
+        strategy - The trading strategy to be used for this trade.  Currently supported strategies are 'buy' and 'sell'.
+        amount - The number of shares to buy or sell.
+
+    :param trades_file: Read the trades from the file and execute them
+    """
+
+    trades_df = pd.read_csv(trades_file)
+    trades_df.apply(lambda x: execute_trade(x.ticker, x.strategy, x.amount), axis=1)
+    pd.DataFrame().to_csv(trades_file, index=False)
+
+
 def execute_trades():
+    """
+    The execute_trades function is the main function that will be called by the scheduler.
+    It reads in a trades file, and executes all of the trades contained within it.
+    The function takes no arguments, but does require that you have set up your environment variables correctly.
+    """
+
     tz = timezone("EST")
     current_time = datetime.now(tz).time()
-
-    trades_df = pd.read_csv(TRADES_TEST_FILE)
 
     # if current execution time is in window #1, read in morning trades file
     if (current_time >= datetime.strptime("05:50:00", "%H:%M:%S").time()) & (
         current_time <= datetime.strptime("06:00:00", "%H:%M:%S").time()
     ):
         print("time window 1")
-        trades_df = pd.read_csv(TRADES_MORNING_FILE)
+        execute_trades_handler(TRADES_MORNING_FILE)
 
     # if current execution time is in window #2, read in afternoon trades file
     elif (current_time >= datetime.strptime("15:50:00", "%H:%M:%S").time()) & (
         current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
     ):
         print("time window 2")
-        trades_df = pd.read_csv(TRADES_AFTERNOON_FILE)
+        execute_trades_handler(TRADES_AFTERNOON_FILE)
 
     else:
+        print("time window test")
+        execute_trades_handler(TRADES_TEST_FILE)
         print("Exception will be raised")
         # raise Exception("Execution time not in morning or afternoon window")
-
-    trades_df.apply(lambda x: execute_trade(x.ticker, x.strategy, x.amount), axis=1)
 
 
 # TODO: delete this

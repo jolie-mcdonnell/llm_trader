@@ -10,20 +10,20 @@ response = requests.get(url)
 # Check if the request was successful
 if response.status_code == 200:
     # Parse the HTML content of the page using Beautiful Soup
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.text, "html.parser")
 
     # Find the table containing the S&P 500 components
-    table = soup.find('table', {'class': 'wikitable'})
+    table = soup.find("table", {"class": "wikitable"})
 
     # Initialize an empty list to store the tickers and names
     sp500_data = []
 
     # Iterate through the rows of the table
-    for row in table.find_all('tr')[1:]:
-        columns = row.find_all('td')
+    for row in table.find_all("tr")[1:]:
+        columns = row.find_all("td")
         ticker = columns[0].text.strip()
         name = columns[1].text.strip()
-        sp500_data.append({'ticker': ticker, 'name': name, 'keywords': []})
+        sp500_data.append({"ticker": ticker, "name": name, "keywords": []})
 
     # Print the list of S&P 500 tickers and names
     for item in sp500_data:
