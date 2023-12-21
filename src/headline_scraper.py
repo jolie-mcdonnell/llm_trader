@@ -69,7 +69,7 @@ def scrape_headlines(
 
 
 # use this to test
-print(scrape_headlines("AAPL", "Apple", ["AAPL", "Apple"]))
+# print(scrape_headlines("AAPL", "Apple", ["AAPL", "Apple"]))
 
 # company_keywords = [
 #     ["Apple", "AAPL", "iPhone", "iPad", "Mac", "iCloud"],

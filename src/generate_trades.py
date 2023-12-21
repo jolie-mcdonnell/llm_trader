@@ -1,5 +1,5 @@
 from llm_call import generate_stock_recommendation
-from headline_scraper import scrape_headlines_sites
+from headline_scraper import scrape_headlines
 import os
 from datetime import datetime
 
@@ -43,7 +43,7 @@ def process_row(row: pd.Series):
 
     :param row: pd.Series: Pass the row of data from the dataframe to the function
     """
-    result = scrape_headlines_sites(
+    result = scrape_headlines(
         row["ticker"],
         row["company"],
         row["keywords"].strip("[]").replace("'", "").split(", "),
