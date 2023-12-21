@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import datetime
 
 google = {
     "name": "Google News",
@@ -34,13 +35,18 @@ def scrape_headlines(
                 if keyword.lower() in headline_text.lower():
                     # if the keyword is in the headline, get the date and description
                     if site["date_attrs"] is None:
-                        date_text = "Date not found"
+                        # if no date element attributes are provided, null
+                        date = None
                     else:
-                        date = headline.find_next(attrs=site["date_attrs"])
-                        if date:
-                            date_text = date["datetime"]
+                        date_element = headline.find_next(attrs=site["date_attrs"])
+                        if date_element:
+                            date_text = date_element["datetime"]
+                            dateUTC = datetime.datetime.strptime(
+                                date_text, "%Y-%m-%dT%H:%M:%SZ"
+                            )
+                            date = dateUTC - datetime.timedelta(hours=5)
                         else:
-                            date_text = "Date not found"
+                            date = None
                     if site["description_attrs"] is None:
                         description_text = "Description not found"
                     else:
@@ -58,7 +64,7 @@ def scrape_headlines(
                             "company": company,
                             "headline": headline_text,
                             # "description": description_text,
-                            "date": date_text,
+                            "date": date,
                             # "source": site["name"],
                         }
                     )

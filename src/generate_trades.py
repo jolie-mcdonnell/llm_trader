@@ -8,6 +8,21 @@ from pytz import timezone
 
 import pandas as pd
 
+# 1 is pre-market, 2 is during market hours, 3 is after-hours
+TRADING_CATEGORIES = {
+    1: {
+        "start": datetime.strptime("00:00:00", "%H:%M:%S").time(),
+        "end": datetime.strptime("09:30:00", "%H:%M:%S").time(),
+    },
+    2: {
+        "start": datetime.strptime("09:30:00", "%H:%M:%S").time(),
+        "end": datetime.strptime("16:00:00", "%H:%M:%S").time(),
+    },
+    3: {
+        "start": datetime.strptime("16:00:00", "%H:%M:%S").time(),
+        "end": datetime.strptime("23:59:59", "%H:%M:%S").time(),
+    },
+}
 
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
@@ -33,6 +48,7 @@ def generate_trade():
     return
 
 
+# List of dataframes containing headlines for each stock
 RESULT_LIST = []
 
 
@@ -51,40 +67,100 @@ def process_row(row: pd.Series):
     RESULT_LIST.append(result)
 
 
-def generate_trades(stocks_file: str):
-    # load in list of stocks to extract info for
-    df = pd.read_csv(stocks_file)
-
-    df.apply(process_row, axis=1)
-
-    result_df = pd.concat(RESULT_LIST, ignore_index=True)
-    result_df.to_csv("headline_test.csv")
-
-    # get trading category
-
+def get_trading_category():
+    """
+    The get_trading_category function gets the current trading category based on the current time.
+    """
+    # Get current time
     tz = timezone("EST")
     current_time = datetime.now(tz).time()
 
-    # time window 1
-    if (current_time >= datetime.strptime("05:45:00", "%H:%M:%S").time()) & (
-        current_time <= datetime.strptime("06:00:00", "%H:%M:%S").time()
+    # THIS IS A WEIRD WAY TO DO THIS
+    # time window 1 (pre-market)
+    if (current_time >= TRADING_CATEGORIES[1]["start"]) & (
+        current_time <= TRADING_CATEGORIES[1]["end"]
     ):
         trade_category = 1
-        transfer_afternoon_trades()
 
-    # time window 2
-    elif (current_time >= datetime.strptime("15:45:00", "%H:%M:%S").time()) & (
-        current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
+    # time window 2 (during market hours)
+    elif (current_time >= TRADING_CATEGORIES[2]["start"]) & (
+        current_time <= TRADING_CATEGORIES[2]["end"]
     ):
         trade_category = 2
 
-    # time window 3
-    elif (current_time >= datetime.strptime("21:45:00", "%H:%M:%S").time()) & (
-        # elif (current_time >= datetime.strptime("18:00:00", "%H:%M:%S").time()) & ( # for testing
-        current_time
-        <= datetime.strptime("00:00:00", "%H:%M:%S").time()
+    # time window 3 (after-hours)
+    elif (current_time >= TRADING_CATEGORIES[3]["start"]) & (
+        current_time <= TRADING_CATEGORIES[3]["end"]
     ):
         trade_category = 3
 
+    return trade_category
+
+
+def headline_filter(df: pd.DataFrame, trade_category: int):
+    """
+    The headline_filter function takes in a dataframe of headlines and filters them based on the trade category.
+    It then returns a dataframe with the filtered headlines.
+
+    :param df: pd.DataFrame: Pass the dataframe of headlines to the function
+    :param trade_category: int: Pass the trade category to the function
+    """
+    # filter headlines based on trade category
+    df = df[
+        (df["date"].dt.date == datetime.now().date())
+        & (df["date"].dt.time >= TRADING_CATEGORIES[trade_category]["start"])
+        & (df["date"].dt.time <= TRADING_CATEGORIES[trade_category]["end"])
+    ]
+    return df
+
+
+def generate_trades(stocks_file: str):
+    # Load list of stocks
+    df = pd.read_csv(stocks_file)
+
+    # Get all headlines for each stock
+    df.apply(process_row, axis=1)
+
+    # Concatenate all dataframes into one
+    result_df = pd.concat(RESULT_LIST, ignore_index=True)
+    # result_df.to_csv("headline_test.csv") # for testing
+
+    # Get trading category
+    trade_category = get_trading_category()
+
+    # Filter headlines based on trade category
+    result_df = headline_filter(result_df, trade_category)
+
+    result_df.to_csv("headline_test.csv")  # for testing
+
+    # TODO: Feed all windowed headlines into model
+
+    # TODO: Get average sentiment in model output, group by ticker
+
+    # TODO: Generate trades for each stock
+
 
 generate_trades("data/stocks_info_test.csv")
+
+# trade_category = 1
+# move yesterday's tomorrow_afternoon trades to today's afternoon trades
+# transfer_afternoon_trades()
+# get headlines from midnight to 9:30-x AM EST
+# feed headlines into model, get average sentiment
+# insert trades for today at open (trades_morning.csv) and today at close (trades_afternoon.csv)
+# if positive, buy then sell (long)
+# if negative, sell then buy (short)
+
+# trade_category = 2
+# get headlines from 9:30 AM EST to 4:00-x PM EST
+# feed headlines into model, get average sentiment
+# insert trades for today at close (trades_afternoon.csv) and tomorrow at close (trades_tomorrow_afternoon.csv)
+# if positive, buy then sell (long)
+# if negative, sell then buy (short)
+
+# trade_category = 3
+# get headlines from 4:00 PM EST to midnight
+# feed headlines into model, get average sentiment
+# insert trades for tomorrow at open (trades_morning.csv) and tomorrow at close (trades_tomorrow_afternoon.csv)
+# if positive, buy then sell (long)
+# if negative, sell then buy (short)
