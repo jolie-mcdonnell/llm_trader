@@ -43,8 +43,11 @@ def process_row(row: pd.Series):
 
     :param row: pd.Series: Pass the row of data from the dataframe to the function
     """
-
-    result = scrape_headlines_sites(row["ticker"], row["company"], row["keywords"])
+    result = scrape_headlines_sites(
+        row["ticker"],
+        row["company"],
+        row["keywords"].strip("[]").replace("'", "").split(", "),
+    )
     RESULT_LIST.append(result)
 
 

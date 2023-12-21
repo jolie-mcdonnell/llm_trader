@@ -7,7 +7,7 @@ NYSE_SYMBOLS = pd.read_csv("data/nyse_stocks.csv")
 NASDAQ_SYMBOLS = pd.read_csv("data/nasdaq_stocks.csv")
 AMEX_SYMBOLS = pd.read_csv("data/amex_stocks.csv")
 
-TRAILING_CHARS = ",.&-"
+TRAILING_CHARS = ",.&-'\""
 
 COMPANY_SUFFIX_LIST = [
     "agency",
@@ -59,31 +59,50 @@ COMPANY_SUFFIX_LIST = [
 
 
 def strip_company_suffix(company_name):
-    # Remove trailing characters
+    """
+    The strip_company_suffix function takes a company name as input and returns the same company name with any suffixes removed.
+
+    :param company_name: The company name to be cleaned up
+    """
+    # remove punctuation
     for c in TRAILING_CHARS:
         company_name = company_name.replace(c, "")
 
-    # Remove trailing words from the company suffix list
+    # split company name into words
     words = re.split(r"\s", company_name)
-    stripped_name = []
 
+    # remove suffixes from company name
+    stripped_name = []
     for word in reversed(words):
+        # trim whitespace
+        word = word.strip()
+        # add word to list if it's not in the suffix list
         if word.lower() in COMPANY_SUFFIX_LIST:
             continue
         else:
             stripped_name.insert(0, word)
 
+    # return cleaned up name as a string
     return " ".join(stripped_name)
 
 
-def generate_stock_list(symbol, name):
+def generate_stock_list(symbol):
+    """
+    The generate_stock_list function takes a stock symbol, fetches the longName from yfinance,
+    strips the company suffix (e.g., Inc., Corp.), and returns a tuple of (symbol, longName, [symbol, stripped_name])
+
+    :param symbol: Fetch the stock information from yahoo finance
+    """
     try:
+        # get stock name from yahoo finance
         stock = yf.Ticker(symbol)
         info = stock.info
         long_name = info.get("longName", "")
+        # clean up company name
         stripped_name = strip_company_suffix(long_name)
 
         print(f"Info fetched successfully for {symbol}")
+        # return tuple of (symbol, long_name, [symbol, stripped_name])
         return (
             symbol,
             long_name,
@@ -94,14 +113,12 @@ def generate_stock_list(symbol, name):
         return None, None, None
 
 
-# Combine symbols
+# Combine all symbols into one DataFrame
 all_symbols = pd.concat([NYSE_SYMBOLS, NASDAQ_SYMBOLS, AMEX_SYMBOLS], ignore_index=True)
-# all_symbols = all_symbols.loc[:10]
-# print(all_symbols)
 
-# Fetch stock info from Yahoo Finance
+# Get company names from yahoo finance
 all_symbols[["ticker", "company", "keywords"]] = all_symbols.apply(
-    lambda row: generate_stock_list(row.Symbol, row.Name),
+    lambda row: generate_stock_list(row.Symbol),
     axis="columns",
     result_type="expand",
 )

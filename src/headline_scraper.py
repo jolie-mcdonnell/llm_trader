@@ -37,13 +37,19 @@ def scrape_headlines(site, keywords):
     url = site["url"]
     response = requests.get(url)
     if response.status_code == 200:
+        # get the html content of the webpage
         soup = BeautifulSoup(response.content, "html.parser")
+        # find all headlines on the page
         headlines = soup.find_all(attrs=site["headline_attrs"])
+        # loop through headlines and find ones that match the keywords
         matching_headlines = []
         for headline in headlines:
+            # get the text of the headline
             headline_text = headline.text.strip()
+            # loop through keywords and see if any are in the headline
             for keyword in keywords:
                 if keyword.lower() in headline_text.lower():
+                    # if the keyword is in the headline, get the date and description
                     if site["date_attrs"] is None:
                         date_text = "Date not found"
                     else:
@@ -62,6 +68,7 @@ def scrape_headlines(site, keywords):
                             description_text = description.text.strip()
                         else:
                             description_text = "Description not found"
+                    # add the headline info to the list of matching headlines
                     matching_headlines.append(
                         {
                             "headline": headline_text,
@@ -80,35 +87,23 @@ def scrape_headlines(site, keywords):
 def scrape_headlines_sites(
     ticker: str,
     company: str,
-    keywords: str,
+    keywords: list,
 ):
+    # scrape headlines related to the company from each supported site
     headline_results = [scrape_headlines(site, keywords) for site in SITES]
-    # clean this up
+    # flatten the list of lists of dictionaries into a list of dictionaries
     flat_list = [i for x in headline_results for i in x]
+    # convert the list of dictionaries to a dataframe
     result_df = pd.DataFrame(flat_list, columns=["headline"])
+    # add the ticker and company name to the dataframe
     result_df["ticker"] = ticker
     result_df["company"] = company
+    # return the dataframe
     return result_df
 
 
 # use this to test
-# scrape_headlines_sites("AAPL", "Apple", ["AAPL", "Apple"])
-
-# wall street journal
-# bloomberg
-# financial times
-# reuters
-# cnbc
-# fortune
-# business insider
-# the economist
-# barrons
-# marketwatch
-# cnn
-# fox news
-# msnbc
-# politico
-
+# print(scrape_headlines_sites("AAPL", "Apple", ["AAPL", "Apple"]))
 
 # company_keywords = [
 #     ["Apple", "AAPL", "iPhone", "iPad", "Mac", "iCloud"],
