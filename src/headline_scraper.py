@@ -77,18 +77,22 @@ def scrape_headlines(site, keywords):
         print("Failed to retrieve the webpage. Status code:", response.status_code)
 
 
-def scrape_headlines_sites(ticker, company, keywords):
+def scrape_headlines_sites(
+    ticker: str,
+    company: str,
+    keywords: str,
+):
     headline_results = [scrape_headlines(site, keywords) for site in SITES]
-    print(headline_results)
     # clean this up
     flat_list = [i for x in headline_results for i in x]
     result_df = pd.DataFrame(flat_list, columns=["headline"])
     result_df["ticker"] = ticker
     result_df["company"] = company
-    result_df.to_csv("out.csv")
+    return result_df
 
 
-scrape_headlines_sites("AAPL", "Apple", ["AAPL", "Apple"])
+# use this to test
+# scrape_headlines_sites("AAPL", "Apple", ["AAPL", "Apple"])
 
 # wall street journal
 # bloomberg

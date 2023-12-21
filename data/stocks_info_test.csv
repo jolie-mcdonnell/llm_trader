@@ -1,8 +1,4 @@
-ticker,company
-A,Agilent Technologies
-AA,Alcoa
-AACT,Ares Acquisition II
-AAIN,
-AAN,Aaron
-AAP,Advance Auto Parts
-AAT,American Assets Trust
+ticker,company,keywords
+AACT,Ares Acquisition Corporation II,"['AACT', 'Ares Acquisition II']"
+MSFT,Microsoft Corporation,"['MSFT', 'Microsoft']"
+CHGG,"Chegg, Inc.","['CHGG', 'Chegg']"
