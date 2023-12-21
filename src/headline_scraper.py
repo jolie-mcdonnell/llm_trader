@@ -2,20 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-nyt = {
-    "name": "New York Times",
-    "url": "https://www.nytimes.com/section/business",
-    "headline_attrs": {"class": "css-1kv6qi e15t083i0"},
-    "description_attrs": {"class": "css-1pga48a e15t083i1"},
-    "date_attrs": {"data-testid": "todays-date"},
-}
-bbc = {
-    "name": "BBC",
-    "url": "https://www.bbc.com/business",
-    "headline_attrs": {"data-testid": "card-headline"},
-    "description_attrs": {"data-testid": "card-description"},
-    "date_attrs": {"data-testid": "card-metadata-lastupdated"},
-}
 google = {
     "name": "Google News",
     "url": "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
@@ -23,17 +9,14 @@ google = {
     "description_attrs": None,
     "date_attrs": {"class": "hvbAAd"},
 }
-washpo = {
-    "name": "Washington Post",
-    "url": "https://www.washingtonpost.com/business/",
-    "headline_attrs": {"data-pb-local-content-field": "web_headline"},
-    "description_attrs": None,
-    "date_attrs": None,
-}
-SITES = [nyt, bbc, google, washpo]
 
 
-def scrape_headlines(site, keywords):
+def scrape_headlines(
+    ticker: str,
+    company: str,
+    keywords: list,
+    site: dict = google,
+):
     url = site["url"]
     response = requests.get(url)
     if response.status_code == 200:
@@ -55,7 +38,7 @@ def scrape_headlines(site, keywords):
                     else:
                         date = headline.find_next(attrs=site["date_attrs"])
                         if date:
-                            date_text = date.text.strip()
+                            date_text = date["datetime"]
                         else:
                             date_text = "Date not found"
                     if site["description_attrs"] is None:
@@ -71,39 +54,22 @@ def scrape_headlines(site, keywords):
                     # add the headline info to the list of matching headlines
                     matching_headlines.append(
                         {
+                            "ticker": ticker,
+                            "company": company,
                             "headline": headline_text,
-                            "description": description_text,
+                            # "description": description_text,
                             "date": date_text,
-                            "source": site["name"],
-                            "business": keywords[0],
+                            # "source": site["name"],
                         }
                     )
                     break
-        return matching_headlines
+        return pd.DataFrame(matching_headlines)
     else:
         print("Failed to retrieve the webpage. Status code:", response.status_code)
 
 
-def scrape_headlines_sites(
-    ticker: str,
-    company: str,
-    keywords: list,
-):
-    # scrape headlines related to the company from each supported site
-    headline_results = [scrape_headlines(site, keywords) for site in SITES]
-    # flatten the list of lists of dictionaries into a list of dictionaries
-    flat_list = [i for x in headline_results for i in x]
-    # convert the list of dictionaries to a dataframe
-    result_df = pd.DataFrame(flat_list, columns=["headline"])
-    # add the ticker and company name to the dataframe
-    result_df["ticker"] = ticker
-    result_df["company"] = company
-    # return the dataframe
-    return result_df
-
-
 # use this to test
-# print(scrape_headlines_sites("AAPL", "Apple", ["AAPL", "Apple"]))
+print(scrape_headlines("AAPL", "Apple", ["AAPL", "Apple"]))
 
 # company_keywords = [
 #     ["Apple", "AAPL", "iPhone", "iPad", "Mac", "iCloud"],
