@@ -1,3 +1,6 @@
+# THIS SHOULD BE UPDATED TO GET NAMES FROM ALPACA INSTEAD OF YAHOO FINANCE
+# THIS WILL ALLOW US TO FILTER OUT STOCK THAT ARE NOT FRACTIONABLE AS WE PROCESS THE LIST OF TICKERS
+
 import pandas as pd
 import re
 import yfinance as yf
@@ -7,7 +10,7 @@ NYSE_SYMBOLS = pd.read_csv("data/nyse_stocks.csv")
 NASDAQ_SYMBOLS = pd.read_csv("data/nasdaq_stocks.csv")
 AMEX_SYMBOLS = pd.read_csv("data/amex_stocks.csv")
 
-TRAILING_CHARS = ",.&-'\""
+TRAILING_CHARS = ",."
 
 COMPANY_SUFFIX_LIST = [
     "agency",
@@ -67,6 +70,9 @@ def strip_company_suffix(company_name):
     # remove punctuation
     for c in TRAILING_CHARS:
         company_name = company_name.replace(c, "")
+
+    # trim quotes and apostrophes
+    company_name = company_name.strip("'").strip('"')
 
     # split company name into words
     words = re.split(r"\s", company_name)

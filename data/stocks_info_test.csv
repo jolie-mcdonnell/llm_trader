@@ -2,3 +2,6 @@ ticker,company,keywords
 AAPL,Apple Inc.,"['AAPL', 'Apple']"
 MSFT,Microsoft Corporation,"['MSFT', 'Microsoft']"
 TSLA,"Tesla, Inc.","['TSLA', 'Tesla']"
+KRTX,"Karuna Therapeutics, Inc.","['KRTX', 'Karuna Therapeutics']"
+BMY,Bristol-Myers Squibb Company,"['BMY', 'Bristol-Myers Squibb']"
+X,United States Steel Corporation,"['X', 'United States Steel']"

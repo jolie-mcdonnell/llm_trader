@@ -10,14 +10,14 @@ TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 TRADES_TEST_FILE = "data/trades_morning_test.csv"
 
 
-def execute_trade(ticker, trade_strategy, dollar_amount):
+def execute_trade(ticker, side, dollar_amount):
     """
-    The execute_trade function takes in a ticker symbol, trade strategy (buy or sell), and dollar amount.
+    The execute_trade function takes in a ticker symbol, trade side (buy or sell), and dollar amount.
     It then checks the available buying power to ensure there's enough for the trade. If so, it executes
     the order using Alpaca's API.
 
     :param ticker: Specify the stock ticker symbol
-    :param trade_strategy: Determine whether to buy or sell the stock
+    :param side: Determine whether to buy or sell the stock
     :param dollar_amount: Determine how much money to trade
     """
 
@@ -38,7 +38,7 @@ def execute_trade(ticker, trade_strategy, dollar_amount):
     buying_power = float(account_info.buying_power)
 
     # Validate if there's enough buying power for the trade
-    if trade_strategy == "buy" and dollar_amount > buying_power:
+    if side == "buy" and dollar_amount > buying_power:
         return "Not enough buying power to execute the buy trade."
 
     # Execute the trade
@@ -47,23 +47,23 @@ def execute_trade(ticker, trade_strategy, dollar_amount):
         last_trade = api.get_latest_trade(ticker)
 
         # Calculate limit price with adjustments
-        if trade_strategy == "buy":
+        if side == "buy":
             num_shares = dollar_amount / float(last_trade.price)
-        elif trade_strategy == "sell":
+        elif side == "sell":
             num_shares = round(dollar_amount / float(last_trade.price), 0)
 
         else:
-            raise Exception("Invalid trade strategy. Please use 'buy' or 'sell'.")
+            raise Exception("Invalid trade side. Please use 'buy' or 'sell'.")
 
         # Submit the order
         api.submit_order(
             symbol=ticker,
             qty=num_shares,
-            side=trade_strategy,
+            side=side,
             type="market",
         )
 
-        print(f"Successfully submitted a {trade_strategy} limit order for {ticker}.")
+        print(f"Successfully submitted a {side} limit order for {ticker}.")
 
     except Exception as e:
         print(f"Error executing the trade: {str(e)}")
@@ -73,14 +73,14 @@ def execute_trades_handler(trades_file):
     """
     The execute_trades_handler function takes in a trades_file, which is a csv file containing the following columns:
         ticker - The stock symbol of the security to be traded.
-        strategy - The trading strategy to be used for this trade.  Currently supported strategies are 'buy' and 'sell'.
+        side - The trading side to be used for this trade.  Currently supported strategies are 'buy' and 'sell'.
         amount - The number of shares to buy or sell.
 
     :param trades_file: Read the trades from the file and execute them
     """
 
     trades_df = pd.read_csv(trades_file)
-    trades_df.apply(lambda x: execute_trade(x.ticker, x.strategy, x.amount), axis=1)
+    trades_df.apply(lambda x: execute_trade(x.ticker, x.side, x.amount), axis=1)
     pd.DataFrame().to_csv(trades_file, index=False)
 
 

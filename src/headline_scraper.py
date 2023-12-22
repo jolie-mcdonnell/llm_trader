@@ -32,6 +32,8 @@ def scrape_headlines(
             headline_text = headline.text.strip()
             # loop through keywords and see if any are in the headline
             for keyword in keywords:
+                if len(keyword) < 3:
+                    continue
                 if keyword.lower() in headline_text.lower():
                     # if the keyword is in the headline, get the date and description
                     if site["date_attrs"] is None:
@@ -64,7 +66,7 @@ def scrape_headlines(
                             "company": company,
                             "headline": headline_text,
                             # "description": description_text,
-                            "date": date,
+                            "datetime": date,
                             # "source": site["name"],
                         }
                     )
