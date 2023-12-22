@@ -220,11 +220,11 @@ def generate_trades(stocks_file: str):
 
     # Generate trades for each stock
     if trade_category == 1:
-        pre_market(rec_df)
+        pre_market(avg_df)
     elif trade_category == 2:
-        during_market(rec_df)
+        during_market(avg_df)
     elif trade_category == 3:
-        after_hours(rec_df)
+        after_hours(avg_df)
 
 
 generate_trades("data/stocks_info_test.csv")
