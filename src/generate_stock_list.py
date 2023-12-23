@@ -1,8 +1,9 @@
-import pandas as pd
+import os
 import re
+
+import pandas as pd
 import yfinance as yf
 from alpaca.trading.client import TradingClient
-import os
 
 # Read stock symbols from local CSV files
 NYSE_SYMBOLS = pd.read_csv("data/nyse_stocks.csv")

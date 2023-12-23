@@ -1,5 +1,6 @@
-from openai import OpenAI
 import os
+
+from openai import OpenAI
 
 
 def generate_stock_recommendation(headline, company_name, term):

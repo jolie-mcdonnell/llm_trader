@@ -1,12 +1,10 @@
-from llm_call import generate_stock_recommendation
-from headline_scraper import scrape_headlines
-import os
 from datetime import datetime
 
 import pandas as pd
 from pytz import timezone
 
-import pandas as pd
+from headline_scraper import scrape_headlines
+from llm_call import generate_stock_recommendation
 
 # 1 is pre-market, 2 is during market hours, 3 is after-hours
 TRADING_CATEGORIES = {
