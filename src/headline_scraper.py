@@ -6,9 +6,17 @@ import datetime
 # Alpaca has a news API: https://docs.alpaca.markets/docs/news-api which would be faster than scraping,
 # but the news is from Benzinga only
 
-google = {
-    "name": "Google News",
+google_business = {
+    "name": "Google Business News",
     "url": "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
+    "headline_attrs": {"class": "gPFEn"},
+    "description_attrs": None,
+    "date_attrs": {"class": "hvbAAd"},
+}
+
+google_tech = {
+    "name": "Google Technology News",
+    "url": "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGRqTVhZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
     "headline_attrs": {"class": "gPFEn"},
     "description_attrs": None,
     "date_attrs": {"class": "hvbAAd"},
@@ -19,7 +27,7 @@ def scrape_headlines(
     ticker: str,
     company: str,
     keywords: list,
-    site: dict = google,
+    site: dict = google_business,
 ):
     """
     The scrape_headlines function takes in a ticker, company name, list of keywords to search for, and a site dictionary.
