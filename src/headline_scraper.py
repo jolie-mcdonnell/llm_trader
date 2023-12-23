@@ -21,6 +21,18 @@ def scrape_headlines(
     keywords: list,
     site: dict = google,
 ):
+    """
+    The scrape_headlines function takes in a ticker, company name, list of keywords to search for, and a site dictionary.
+    The function then scrapes the website specified by the url key in the site dictionary for headlines that contain any of
+    the keywords provided. The function returns a pandas DataFrame containing all matching headlines with their associated
+    ticker symbol, company name, and datetime.
+
+    :param ticker: str: The ticker symbol of the company you are looking for
+    :param company: str: The name of the company
+    :param keywords: list: The keywords to search for in the headlines
+    :param site: dict: Information about the website to scrape: name, url, headline_attrs, description_attrs, date_attrs
+    :return: A dataframe with the following columns: ticker, company, headline, datetime
+    """
     url = site["url"]
     response = requests.get(url)
     if response.status_code == 200:
