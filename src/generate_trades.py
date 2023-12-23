@@ -141,14 +141,44 @@ def pre_market(df: pd.DataFrame):
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
     # If news is positive, buy then sell (long)
-
     # If news is negative, sell then buy (short)
-
-    # Concatenate long and short dataframes
-
     # Write first trades to trades_morning.csv
-
     # Write second trades to trades_afternoon.csv
+    morning_trades = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] > 0]["ticker"],
+                    "side": "buy",
+                }
+            ),
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] < 0]["ticker"],
+                    "side": "sell",
+                }
+            ),
+        ]
+    )
+    morning_trades.to_csv(TRADES_MORNING_FILE, index=False)
+
+    afternoon_trades = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] > 0]["ticker"],
+                    "side": "sell",
+                }
+            ),
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] < 0]["ticker"],
+                    "side": "buy",
+                }
+            ),
+        ]
+    )
+    afternoon_trades.to_csv(TRADES_AFTERNOON_FILE, index=False)
 
 
 def during_market(df: pd.DataFrame):
@@ -159,14 +189,44 @@ def during_market(df: pd.DataFrame):
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
     # If news is positive, buy then sell (long)
-
     # If news is negative, sell then buy (short)
-
-    # Concatenate long and short dataframes
-
     # Write first trades to trades_afternoon.csv
-
     # Write second trades to trades_tomorrow_afternoon.csv
+    afternoon_trades = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] > 0]["ticker"],
+                    "side": "buy",
+                }
+            ),
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] < 0]["ticker"],
+                    "side": "sell",
+                }
+            ),
+        ]
+    )
+    afternoon_trades.to_csv(TRADES_AFTERNOON_FILE, index=False)
+
+    tomorrow_afternoon_trades = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] > 0]["ticker"],
+                    "side": "sell",
+                }
+            ),
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] < 0]["ticker"],
+                    "side": "buy",
+                }
+            ),
+        ]
+    )
+    tomorrow_afternoon_trades.to_csv(TRADES_TOMORROW_ATERNOON_FILE, index=False)
 
 
 def after_hours(df: pd.DataFrame):
@@ -177,14 +237,44 @@ def after_hours(df: pd.DataFrame):
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
     # If news is positive, buy then sell (long)
-
     # If news is negative, sell then buy (short)
-
-    # Concatenate long and short dataframes
-
     # Write first trades to trades_morning.csv
-
     # Write second trades to trades_tomorrow_afternoon.csv
+    morning_trades = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] > 0]["ticker"],
+                    "side": "buy",
+                }
+            ),
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] < 0]["ticker"],
+                    "side": "sell",
+                }
+            ),
+        ]
+    )
+    morning_trades.to_csv(TRADES_MORNING_FILE, index=False)
+
+    tomorrow_afternoon_trades = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] > 0]["ticker"],
+                    "side": "sell",
+                }
+            ),
+            pd.DataFrame(
+                {
+                    "ticker": df[df["recommendation"] < 0]["ticker"],
+                    "side": "buy",
+                }
+            ),
+        ]
+    )
+    tomorrow_afternoon_trades.to_csv(TRADES_TOMORROW_ATERNOON_FILE, index=False)
 
 
 def generate_trades(stocks_file: str):
@@ -215,6 +305,8 @@ def generate_trades(stocks_file: str):
 
     # Get average sentiment in model output, group by ticker
     avg_df = rec_df.groupby("ticker").mean()
+    # reshape to [ticker, recommendation]
+    avg_df = avg_df.reset_index()
 
     avg_df.to_csv("sentiment_test.csv")  # for testing
 
