@@ -1,2 +1,2 @@
 # llm_trader
-LLM Autotrading Tool
+Automatic trading system using a large language model to assess headlines.
