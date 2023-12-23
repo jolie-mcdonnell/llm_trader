@@ -1,13 +1,8 @@
-# TODO: This should be updated to get info from the Alpaca Assets API instead of yfinance
-# This will allow us to find Alpaca stocks that are:
-# 1. Fractionable
-# 2. Tradable
-# 3. Easy-to-borrow (for when we implement shorting)
-# see: https://docs.alpaca.markets/docs/working-with-assets
-
 import pandas as pd
 import re
 import yfinance as yf
+from alpaca.trading.client import TradingClient
+import os
 
 # Read stock symbols from local CSV files
 NYSE_SYMBOLS = pd.read_csv("data/nyse_stocks.csv")
@@ -64,6 +59,10 @@ COMPANY_SUFFIX_LIST = [
     "the",
 ]
 
+TRADING_CLIENT = TradingClient(
+    os.getenv("ALPACA_API_KEY"), os.getenv("ALPACA_SECRET_KEY")
+)
+
 
 def strip_company_suffix(company_name):
     """
@@ -104,20 +103,32 @@ def generate_stock_list(symbol):
     :param symbol: Fetch the stock information from yahoo finance
     """
     try:
-        # get stock name from yahoo finance
-        stock = yf.Ticker(symbol)
-        info = stock.info
-        long_name = info.get("longName", "")
-        # clean up company name
-        stripped_name = strip_company_suffix(long_name)
+        # This will allow us to find Alpaca stocks that are:
+        # 1. Fractionable
+        # 2. Tradable
+        # 3. Easy-to-borrow (for when we implement shorting)
+        asset = TRADING_CLIENT.get_asset(symbol)
+        if (
+            asset.tradable
+            and asset.fractionable
+            and asset.easy_to_borrow
+            and asset.shortable
+        ):
+            # get stock name from yahoo finance
+            stock = yf.Ticker(symbol)
 
-        print(f"Info fetched successfully for {symbol}")
-        # return tuple of (symbol, long_name, [symbol, stripped_name])
-        return (
-            symbol,
-            long_name,
-            [symbol, stripped_name],
-        )
+            info = stock.info
+            long_name = info.get("longName", "")
+            # clean up company name
+            stripped_name = strip_company_suffix(long_name)
+
+            print(f"Info fetched successfully for {symbol}")
+            # return tuple of (symbol, long_name, [symbol, stripped_name])
+            return (
+                symbol,
+                long_name,
+                [symbol, stripped_name],
+            )
     except Exception as e:
         print(f"Error fetching info for {symbol}: {e}")
         return None, None, None
@@ -125,6 +136,7 @@ def generate_stock_list(symbol):
 
 # Combine all symbols into one DataFrame
 all_symbols = pd.concat([NYSE_SYMBOLS, NASDAQ_SYMBOLS, AMEX_SYMBOLS], ignore_index=True)
+
 
 # Get company names from yahoo finance
 all_symbols[["ticker", "company", "keywords"]] = all_symbols.apply(
@@ -138,6 +150,6 @@ all_symbols[["ticker", "company", "keywords"]] = all_symbols.apply(
 df = all_symbols[["ticker", "company", "keywords"]].dropna()
 
 # Save DataFrame to CSV
-df.to_csv("data/stocks_info_2.csv", index=False)
+df.to_csv("data/stocks_info_3.csv", index=False)
 
-print("Script completed. Output saved to stocks_info_2.csv.")
+print("Script completed. Output saved to stocks_info_3.csv.")
