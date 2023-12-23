@@ -1,5 +1,8 @@
-# THIS SHOULD BE UPDATED TO GET NAMES FROM ALPACA INSTEAD OF YAHOO FINANCE
-# THIS WILL ALLOW US TO FILTER OUT STOCK THAT ARE NOT FRACTIONABLE AS WE PROCESS THE LIST OF TICKERS
+# TODO: This should be updated to get info from the Alpaca Assets API instead of yfinance
+# This will allow us to find Alpaca stocks that are:
+# 1. Fractionable
+# 2. Tradable
+# 3. Easy-to-borrow (for when we implement shorting)
 # see: https://docs.alpaca.markets/docs/working-with-assets
 
 import pandas as pd

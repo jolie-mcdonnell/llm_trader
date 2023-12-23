@@ -10,8 +10,11 @@ TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 TRADES_TEST_FILE = "data/trades_morning_test.csv"
 
 # Orders on Alpaca: https://docs.alpaca.markets/docs/orders-at-alpaca
-# Short selling rules: https://docs.alpaca.markets/docs/margin-and-short-selling # I THINK WE SHOULD HOLD OFF ON SHORT SELLING FOR NOW
+# Short selling rules: https://docs.alpaca.markets/docs/margin-and-short-selling
 # Fractional trading: https://docs.alpaca.markets/docs/fractional-trading
+
+# TODO: Count number of positions in the current window and spread the buying power evenly across them
+# When we implement short selling, we'll need to be sure we keep enough buying power to cover the shorts
 
 
 def execute_trade(ticker, side, dollar_amount):

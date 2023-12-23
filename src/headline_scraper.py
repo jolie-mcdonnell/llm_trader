@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import datetime
 
-# Alpaca has a news API: https://docs.alpaca.markets/docs/news-api
+# Alpaca has a news API: https://docs.alpaca.markets/docs/news-api which would be faster than scraping,
+# but the news is from Benzinga only
 
 google = {
     "name": "Google News",
