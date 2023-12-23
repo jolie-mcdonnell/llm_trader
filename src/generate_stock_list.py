@@ -1,5 +1,6 @@
 # THIS SHOULD BE UPDATED TO GET NAMES FROM ALPACA INSTEAD OF YAHOO FINANCE
 # THIS WILL ALLOW US TO FILTER OUT STOCK THAT ARE NOT FRACTIONABLE AS WE PROCESS THE LIST OF TICKERS
+# see: https://docs.alpaca.markets/docs/working-with-assets
 
 import pandas as pd
 import re

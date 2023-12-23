@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import datetime
 
+# Alpaca has a news API: https://docs.alpaca.markets/docs/news-api
+
 google = {
     "name": "Google News",
     "url": "https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen",
