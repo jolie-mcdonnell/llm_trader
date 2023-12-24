@@ -24,26 +24,6 @@ TRADING_CATEGORIES = {
 
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
-TRADES_TOMORROW_ATERNOON_FILE = "data/trades_tomorrow_afternoon.csv"
-
-
-def transfer_afternoon_trades():
-    """
-    The transfer_afternoon_trades function is used to transfer the trades that are made yesterday afternoon
-    to be transferred to today's afternoon trades. This function is called at 4:00 PM EST every day.
-    """
-    # Read data from tomorrow afternoon trades csv
-    df_tomorrow_afternoon = pd.read_csv(TRADES_TOMORROW_ATERNOON_FILE)
-
-    # Overwrite this afternoon's files with df_tomorrow_afternoon
-    df_tomorrow_afternoon.to_csv(TRADES_AFTERNOON_FILE, index=False)
-
-    # Delete the rows from trades_tomorrow_afternoon.csv
-    pd.DataFrame().to_csv(TRADES_TOMORROW_ATERNOON_FILE, index=False)
-
-
-def generate_trade():
-    return
 
 
 # List of dataframes containing headlines for each stock
@@ -158,38 +138,19 @@ def pre_market(df: pd.DataFrame):
             ),
         ]
     )
-    morning_trades.to_csv(TRADES_MORNING_FILE, index=False)
-
-    afternoon_trades = pd.concat(
-        [
-            pd.DataFrame(
-                {
-                    "ticker": df[df["recommendation"] > 0]["ticker"],
-                    "side": "sell",
-                }
-            ),
-            pd.DataFrame(
-                {
-                    "ticker": df[df["recommendation"] < 0]["ticker"],
-                    "side": "buy",
-                }
-            ),
-        ]
-    )
-    afternoon_trades.to_csv(TRADES_AFTERNOON_FILE, index=False)
+    morning_trades.to_csv(TRADES_MORNING_FILE, mode="a", header=False, index=False)
 
 
 def during_market(df: pd.DataFrame):
     """
     The during_market function takes in a dataframe of sentiments and generates trades for each stock.
-    It then writes the trades to the trades_afternoon.csv and trades_tomorrow_afternoon.csv files.
+    It then writes the trades to the trades_afternoon.csv file.
 
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
     # If news is positive, buy then sell (long)
     # If news is negative, sell then buy (short)
     # Write first trades to trades_afternoon.csv
-    # Write second trades to trades_tomorrow_afternoon.csv
     afternoon_trades = pd.concat(
         [
             pd.DataFrame(
@@ -206,38 +167,19 @@ def during_market(df: pd.DataFrame):
             ),
         ]
     )
-    afternoon_trades.to_csv(TRADES_AFTERNOON_FILE, index=False)
-
-    tomorrow_afternoon_trades = pd.concat(
-        [
-            pd.DataFrame(
-                {
-                    "ticker": df[df["recommendation"] > 0]["ticker"],
-                    "side": "sell",
-                }
-            ),
-            pd.DataFrame(
-                {
-                    "ticker": df[df["recommendation"] < 0]["ticker"],
-                    "side": "buy",
-                }
-            ),
-        ]
-    )
-    tomorrow_afternoon_trades.to_csv(TRADES_TOMORROW_ATERNOON_FILE, index=False)
+    afternoon_trades.to_csv(TRADES_AFTERNOON_FILE, mode="a", header=False, index=False)
 
 
 def after_hours(df: pd.DataFrame):
     """
     The after_hours function takes in a dataframe of sentiments and generates trades for each stock.
-    It then writes the trades to the trades_morning.csv and trades_tomorrow_afternoon.csv files.
+    It then writes the trades to the trades_morning.csv file.
 
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
     # If news is positive, buy then sell (long)
     # If news is negative, sell then buy (short)
     # Write first trades to trades_morning.csv
-    # Write second trades to trades_tomorrow_afternoon.csv
     morning_trades = pd.concat(
         [
             pd.DataFrame(
@@ -254,25 +196,7 @@ def after_hours(df: pd.DataFrame):
             ),
         ]
     )
-    morning_trades.to_csv(TRADES_MORNING_FILE, index=False)
-
-    tomorrow_afternoon_trades = pd.concat(
-        [
-            pd.DataFrame(
-                {
-                    "ticker": df[df["recommendation"] > 0]["ticker"],
-                    "side": "sell",
-                }
-            ),
-            pd.DataFrame(
-                {
-                    "ticker": df[df["recommendation"] < 0]["ticker"],
-                    "side": "buy",
-                }
-            ),
-        ]
-    )
-    tomorrow_afternoon_trades.to_csv(TRADES_TOMORROW_ATERNOON_FILE, index=False)
+    morning_trades.to_csv(TRADES_MORNING_FILE, mode="a", header=False, index=False)
 
 
 def generate_trades(stocks_file: str):
@@ -320,7 +244,7 @@ def generate_trades(stocks_file: str):
 generate_trades("data/stocks_info_test.csv")
 
 # trade_category = 1
-# move yesterday's tomorrow_afternoon trades to today's afternoon trades
+# move yesterday's _afternoon trades to today's afternoon trades
 # transfer_afternoon_trades()
 # get headlines from midnight to 9:30-x AM EST
 # feed headlines into model, get average sentiment
@@ -331,13 +255,13 @@ generate_trades("data/stocks_info_test.csv")
 # trade_category = 2
 # get headlines from 9:30 AM EST to 4:00-x PM EST
 # feed headlines into model, get average sentiment
-# insert trades for today at close (trades_afternoon.csv) and tomorrow at close (trades_tomorrow_afternoon.csv)
+# insert trades for today at close (trades_afternoon.csv) and  at close (trades__afternoon.csv)
 # if positive, buy then sell (long)
 # if negative, sell then buy (short)
 
 # trade_category = 3
 # get headlines from 4:00 PM EST to midnight
 # feed headlines into model, get average sentiment
-# insert trades for tomorrow at open (trades_morning.csv) and tomorrow at close (trades_tomorrow_afternoon.csv)
+# insert trades for  at open (trades_morning.csv) and  at close (trades__afternoon.csv)
 # if positive, buy then sell (long)
 # if negative, sell then buy (short)

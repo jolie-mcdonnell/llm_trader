@@ -1,3 +1,3 @@
-ticker,strategy,amount
-PZZA,buy,20
-AAL,sell,20
+ticker,strategy
+PZZA,buy
+AAL,sell
