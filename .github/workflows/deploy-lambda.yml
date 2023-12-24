@@ -1,0 +1,65 @@
+name: Deploy Python Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.py' # Change to the file extension of the language that you are using.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2 # To fetch the current commit and its parent (so we can compare)
+
+    - name: Setup AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2 # Modify this to your desired AWS region
+
+    - name: Print changed files # To properly debug what is being deployed (It can be removed).
+      run: |
+        echo "List of changed files:" 
+        echo $(git diff --name-only HEAD^ HEAD)
+    - name: Deploy Modified Files
+      run: |
+        # Constants
+        S3_BUCKET=<YOUR S3 BUCKET>
+        S3_KEY=<FILE_NAME.zip>
+        LAMBDA_FUNCTION_NAME=<NAME OF THE LAMBDA FUNCTION>
+        # Download the existing zip from S3
+        aws s3 cp s3://$S3_BUCKET/$S3_KEY existing_lambda.zip
+        # Unzip the existing package
+        unzip existing_lambda.zip -d lambda_env
+        # Copy only the modified .py files from the commit into the unzipped directory
+        # This will maintain their directory structure.
+        for file in $(git diff-tree --no-commit-id --name-only -r HEAD); do
+            if [[ $file == *.py ]]; then
+                # Create the directory structure in lambda_env for the modified file
+                mkdir -p lambda_env/$(dirname $file)
+                # Copy the modified file
+                cp $file lambda_env/$file
+                # Print what you've done with the file
+                echo "Copied $file to lambda_env/$file"
+                echo "Content of $file after copying:"
+                cat lambda_env/$file
+            fi
+        done
+        # Zip the directory again
+        cd lambda_env
+        zip -r ../updated_lambda.zip .
+        cd ..
+        # Upload the updated zip to S3
+        aws s3 cp updated_lambda.zip s3://$S3_BUCKET/$S3_KEY
+        # Update Lambda function code
+        aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
+        # Cleanup
+        rm -r lambda_env
+        rm existing_lambda.zip updated_lambda.zip
