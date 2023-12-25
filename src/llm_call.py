@@ -3,11 +3,7 @@ import os
 from openai import OpenAI
 
 
-def generate_stock_recommendation(
-    headline: str,
-    company_name: str,
-    term: str,
-):
+def generate_stock_recommendation(headline: str, company_name: str, term: str):
     """
     The generate_stock_recommendation function takes in a headline, company name, and term (short or long) as arguments.
     It then uses the OpenAI API to generate a recommendation for whether the stock price of that company will go up or down based on that headline.
