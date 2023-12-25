@@ -22,9 +22,10 @@ TRADING_CATEGORIES = {
     },
 }
 
-TRADES_MORNING_FILE = "data/trades_morning.csv"
-TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
+S3_BUCKET = "llm-trader"
 
+TRADES_MORNING_FILE = f"s3://{S3_BUCKET}/data/trades_morning.csv"
+TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
 
 # List of dataframes containing headlines for each stock
 RESULT_LIST = []
