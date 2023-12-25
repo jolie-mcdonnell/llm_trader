@@ -31,7 +31,9 @@ TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
 RESULT_LIST = []
 
 
-def process_row(row: pd.Series):
+def process_row(
+    row: pd.Series,
+):
     """
     The process_row function takes in a row from the dataframe and scrapes the headlines for that company.
     It then returns a dictionary with all of the information about that company's news.

@@ -59,7 +59,7 @@ def is_weekend_or_holiday():
     return is_weekend or is_holiday
 
 
-def execute_trade(ticker, side):
+def execute_trade(ticker: str, side):
     """
     The execute_trade function takes in a ticker symbol, trade side (buy or sell).
     It then checks the available buying power to ensure there's enough for the trade. If so, it executes
