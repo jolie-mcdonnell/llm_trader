@@ -249,21 +249,21 @@ generate_trades("data/stocks_info_test.csv")
 # trade_category = 1
 # move yesterday's _afternoon trades to today's afternoon trades
 # transfer_afternoon_trades()
-# get headlines from midnight to 9:30-x AM EST
+# get headlines from midnight to 9:30-x AM EST - starting with 8AM
 # feed headlines into model, get average sentiment
 # insert trades for today at open (trades_morning.csv) and today at close (trades_afternoon.csv)
 # if positive, buy then sell (long)
 # if negative, sell then buy (short)
 
 # trade_category = 2
-# get headlines from 9:30 AM EST to 4:00-x PM EST
+# get headlines from 9:30 AM EST to 4:00-x PM EST - starting with 2:30PM
 # feed headlines into model, get average sentiment
 # insert trades for today at close (trades_afternoon.csv) and  at close (trades__afternoon.csv)
 # if positive, buy then sell (long)
 # if negative, sell then buy (short)
 
 # trade_category = 3
-# get headlines from 4:00 PM EST to midnight
+# get headlines from 4:00 PM EST to midnight - starting with 10:30PM
 # feed headlines into model, get average sentiment
 # insert trades for  at open (trades_morning.csv) and  at close (trades__afternoon.csv)
 # if positive, buy then sell (long)

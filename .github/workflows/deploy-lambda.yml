@@ -37,6 +37,12 @@ jobs:
           # Unzip the existing package
           unzip existing_lambda.zip -d lambda_env
 
+          # Copy requirements.txt to lambda_env
+          cp requirements.txt lambda_env/
+
+          # Install dependencies
+          pip install -r lambda_env/requirements.txt -t lambda_env/
+
           # Copy only the modified generate_trades files from the commit into the unzipped directory
           for file in $(git diff-tree --no-commit-id --name-only -r HEAD); do
               if [[ $file == generate_trades* && $file == *.py ]]; then
@@ -91,6 +97,12 @@ jobs:
 
           # Unzip the existing package
           unzip existing_lambda.zip -d lambda_env
+
+          # Copy requirements.txt to lambda_env
+          cp requirements.txt lambda_env/
+
+          # Install dependencies
+          pip install -r lambda_env/requirements.txt -t lambda_env/
 
           # Copy only the modified execute_trades files from the commit into the unzipped directory
           for file in $(git diff-tree --no-commit-id --name-only -r HEAD); do
