@@ -1,0 +1,6 @@
+datetime
+pandas
+pytz
+requests
+bs4
+openai
