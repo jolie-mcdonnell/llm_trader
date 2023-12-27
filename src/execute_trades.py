@@ -30,7 +30,7 @@ API = tradeapi.REST(
 # Fractional trading: https://docs.alpaca.markets/docs/fractional-trading
 
 
-# TODO: Count the number of positions in the current window and spread the buying power evenly across them
+# TODO: Count number of positions in the current window and spread the buying power evenly across them
 # When we implement short selling, we'll need to be sure we keep enough buying power to cover the shorts
 
 
