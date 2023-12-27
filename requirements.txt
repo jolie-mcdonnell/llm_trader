@@ -24,7 +24,6 @@ lxml==4.9.4
 msgpack==1.0.3
 multidict==5.2.0
 multitasking==0.0.11
-numpy==1.26.2
 openai==1.4.0
 packaging==23.2
 pandas==2.1.4
