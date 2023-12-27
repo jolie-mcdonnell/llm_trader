@@ -38,7 +38,7 @@ jobs:
           unzip existing_lambda.zip -d lambda_env
 
           # Copy requirements.txt to lambda_env
-          cp ./requirements.txt lambda_env/
+          cp requirements.txt lambda_env/
 
           # Install dependencies
           pip install -r lambda_env/requirements.txt -t lambda_env/
@@ -99,7 +99,7 @@ jobs:
           unzip existing_lambda.zip -d lambda_env
 
           # Copy requirements.txt to lambda_env
-          cp ./requirements.txt lambda_env/
+          cp requirements.txt lambda_env/
 
           # Install dependencies
           pip install -r lambda_env/requirements.txt -t lambda_env/
