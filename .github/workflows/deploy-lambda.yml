@@ -8,64 +8,96 @@ on:
       - "**.py" # Change to the file extension of the language that you are using.
 
 jobs:
-  - name: Deploy generate_trades
-    run: |
-      # Constants
-      S3_BUCKET=llm-trader
-      S3_KEY=generate_trades.zip
-      LAMBDA_FUNCTION_NAME=generate_trades
+  deploy_generate_trades:
+    runs-on: ubuntu-latest
+    name: Deploy generate_trades
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
-      # Create a directory for the Lambda environment
-      mkdir lambda_env
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      # Install dependencies in the lambda_env directory
-      pip install -r requirements.txt -t lambda_env/
+      - name: Deploy generate_trades
+        run: |
+          # Constants
+          S3_BUCKET=llm-trader
+          S3_KEY=generate_trades.zip
+          LAMBDA_FUNCTION_NAME=generate_trades
 
-      # Copy the main Lambda function file and its dependencies
-      cp generate_trades.py llm_call.py headline_scraper.py lambda_env/
+          # Create a directory for the Lambda environment
+          mkdir lambda_env
 
-      # Zip the directory again
-      cd lambda_env
-      zip -r ../updated_generate_trades.zip .
-      cd ..
+          # Install dependencies in the lambda_env directory
+          pip install -r requirements.txt -t lambda_env/
 
-      # Upload the updated zip to S3
-      aws s3 cp updated_generate_trades.zip s3://$S3_BUCKET/$S3_KEY
+          # Copy the main Lambda function file and its dependencies
+          cp generate_trades.py llm_call.py headline_scraper.py lambda_env/
 
-      # Update Lambda function code
-      aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
+          # Zip the directory again
+          cd lambda_env
+          zip -r ../updated_generate_trades.zip .
+          cd ..
 
-      # Cleanup
-      rm -rf lambda_env
-      rm updated_generate_trades.zip
+          # Upload the updated zip to S3
+          aws s3 cp updated_generate_trades.zip s3://$S3_BUCKET/$S3_KEY
 
-  - name: Deploy execute_trades
-    run: |
-      # Constants
-      S3_BUCKET=llm-trader
-      S3_KEY=execute_trades.zip
-      LAMBDA_FUNCTION_NAME=execute_trades
+          # Update Lambda function code
+          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
 
-      # Create a directory for the Lambda environment
-      mkdir lambda_env
+          # Cleanup
+          rm -rf lambda_env
+          rm updated_generate_trades.zip
 
-      # Install dependencies in the lambda_env directory
-      pip install -r requirements.txt -t lambda_env/
+  deploy_execute_trades:
+    runs-on: ubuntu-latest
+    name: Deploy execute_trades
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
-      # Copy the main Lambda function file
-      cp execute_trades.py lambda_env/
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      # Zip the directory again
-      cd lambda_env
-      zip -r ../updated_execute_trades.zip .
-      cd ..
+      - name: Deploy execute_trades
+        run: |
+          # Constants
+          S3_BUCKET=llm-trader
+          S3_KEY=execute_trades.zip
+          LAMBDA_FUNCTION_NAME=execute_trades
 
-      # Upload the updated zip to S3
-      aws s3 cp updated_execute_trades.zip s3://$S3_BUCKET/$S3_KEY
+          # Create a directory for the Lambda environment
+          mkdir lambda_env
 
-      # Update Lambda function code
-      aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
+          # Install dependencies in the lambda_env directory
+          pip install -r requirements.txt -t lambda_env/
 
-      # Cleanup
-      rm -rf lambda_env
-      rm updated_execute_trades.zip
+          # Copy the main Lambda function file
+          cp execute_trades.py lambda_env/
+
+          # Zip the directory again
+          cd lambda_env
+          zip -r ../updated_execute_trades.zip .
+          cd ..
+
+          # Upload the updated zip to S3
+          aws s3 cp updated_execute_trades.zip s3://$S3_BUCKET/$S3_KEY
+
+          # Update Lambda function code
+          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
+
+          # Cleanup
+          rm -rf lambda_env
+          rm updated_execute_trades.zip
