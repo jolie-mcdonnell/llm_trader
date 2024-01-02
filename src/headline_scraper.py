@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Alpaca has a news API: https://docs.alpaca.markets/docs/news-api which would be faster than scraping,
-# but the news is from Benzinga only
+# but  the news is from Benzinga only
 
 google_business = {
     "name": "Google Business News",

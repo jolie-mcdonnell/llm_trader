@@ -38,7 +38,7 @@ jobs:
           pip install -r requirements.txt -t lambda_env/
 
           # Copy the main Lambda function file and its dependencies
-          cp generate_trades.py llm_call.py headline_scraper.py lambda_env/
+          cp src/generate_trades.py src/llm_call.py src/headline_scraper.py lambda_env/
 
           # Zip the directory again
           cd lambda_env
@@ -85,7 +85,7 @@ jobs:
           pip install -r requirements.txt -t lambda_env/
 
           # Copy the main Lambda function file
-          cp execute_trades.py lambda_env/
+          cp src/execute_trades.py lambda_env/
 
           # Zip the directory again
           cd lambda_env
