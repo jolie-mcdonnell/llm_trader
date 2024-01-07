@@ -6,7 +6,7 @@ from pytz import timezone
 from headline_scraper import scrape_headlines
 from llm_call import generate_stock_recommendation
 
-# 1 is pre-market, 2 is during market hours, 3 is after hours
+# 1 is  pre-market, 2 is during market hours, 3 is after hours
 TRADING_CATEGORIES = {
     1: {
         "start": datetime.strptime("00:00:00", "%H:%M:%S").time(),

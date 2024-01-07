@@ -18,8 +18,7 @@ jobs:
 
       - name: Build and Push Docker Image for generate_trades
         run: |
-          echo ${{ secrets.AWS_ACCESS_KEY_ID }} | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader
-          docker build -t generate_trades:latest .
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com
           docker tag generate_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/generate_trades:latest
           docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/generate_trades:latest
 
@@ -33,7 +32,7 @@ jobs:
 
       - name: Build and Push Docker Image for execute_trades
         run: |
-          echo ${{ secrets.AWS_ACCESS_KEY_ID }} | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com
           docker build -t execute_trades:latest .
           docker tag execute_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/execute_trades:latest
           docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/execute_trades:latest
