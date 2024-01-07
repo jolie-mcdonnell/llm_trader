@@ -6,7 +6,6 @@ import pandas as pd
 import pandas_market_calendars as mcal
 from pytz import timezone
 
-#
 
 S3_BUCKET = "llm-trader"
 
