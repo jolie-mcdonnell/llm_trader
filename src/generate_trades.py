@@ -27,7 +27,7 @@ S3_BUCKET = "llm-trader"
 TRADES_MORNING_FILE = f"s3://{S3_BUCKET}/data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
 
-# List of dfs containing headlines for each stock
+# List of  dfs containing headlines for each stock
 RESULT_LIST = []
 
 

@@ -26,8 +26,9 @@ jobs:
       - name: Build and Push Docker Image for generate_trades
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com
-          docker tag generate_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/generate_trades:latest
-          docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/generate_trades:latest
+          docker build -t generate_trades:latest .
+          docker tag generate_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/generate_trades:latest
+          docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/generate_trades:latest
 
   deploy_execute_trades:
     runs-on: ubuntu-latest
