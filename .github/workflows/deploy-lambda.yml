@@ -49,5 +49,5 @@ jobs:
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com
           docker build -t execute_trades:latest .
-          docker tag execute_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/execute_trades:latest
-          docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/execute_trades:latest
+          docker tag execute_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/execute_trades:latest
+          docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/execute_trades:latest
