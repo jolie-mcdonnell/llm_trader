@@ -1,103 +1,39 @@
-name: Deploy Python Lambda
+name: Deploy Docker Image to Lambda
 
 on:
   push:
     branches:
       - main
     paths:
-      - "**.py" # Change to the file extension of the language that you are using.
+      - '**.py'
 
 jobs:
   deploy_generate_trades:
     runs-on: ubuntu-latest
-    name: Deploy generate_trades
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 2
 
-      - name: Setup AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy generate_trades
+      - name: Build and Push Docker Image for generate_trades
         run: |
-          # Constants
-          S3_BUCKET=llm-trader
-          S3_KEY=generate_trades.zip
-          LAMBDA_FUNCTION_NAME=generate_trades
-
-          # Create a directory for the Lambda environment
-          mkdir lambda_env
-
-          # Install dependencies in the lambda_env directory
-          pip install -r requirements.txt -t lambda_env/
-
-          # Copy the main Lambda function file and its dependencies
-          cp src/generate_trades.py src/llm_call.py src/headline_scraper.py lambda_env/
-
-          # Zip the directory again
-          cd lambda_env
-          zip -r ../updated_generate_trades.zip .
-          cd ..
-
-          # Upload the updated zip to S3
-          aws s3 cp updated_generate_trades.zip s3://$S3_BUCKET/$S3_KEY
-
-          # Update Lambda function code
-          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
-
-          # Cleanup
-          rm -rf lambda_env
-          rm updated_generate_trades.zip
+          echo ${{ secrets.AWS_ACCESS_KEY_ID }} | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader
+          docker build -t generate_trades:latest .
+          docker tag generate_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/generate_trades:latest
+          docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/generate_trades:latest
 
   deploy_execute_trades:
     runs-on: ubuntu-latest
-    name: Deploy execute_trades
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 2
 
-      - name: Setup AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Deploy execute_trades
+      - name: Build and Push Docker Image for execute_trades
         run: |
-          # Constants
-          S3_BUCKET=llm-trader
-          S3_KEY=execute_trades.zip
-          LAMBDA_FUNCTION_NAME=execute_trades
-
-          # Create a directory for the Lambda environment
-          mkdir lambda_env
-
-          # Install dependencies in the lambda_env directory
-          pip install -r requirements.txt -t lambda_env/
-
-          # Copy the main Lambda function file
-          cp src/execute_trades.py lambda_env/
-
-          # Zip the directory again
-          cd lambda_env
-          zip -r ../updated_execute_trades.zip .
-          cd ..
-
-          # Upload the updated zip to S3
-          aws s3 cp updated_execute_trades.zip s3://$S3_BUCKET/$S3_KEY
-
-          # Update Lambda function code
-          aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
-
-          # Cleanup
-          rm -rf lambda_env
-          rm updated_execute_trades.zip
+          echo ${{ secrets.AWS_ACCESS_KEY_ID }} | docker login --username AWS --password-stdin 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader
+          docker build -t execute_trades:latest .
+          docker tag execute_trades:latest 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/execute_trades:latest
+          docker push 738439344433.dkr.ecr.us-east-1.amazonaws.com/llm-trader/execute_trades:latest
