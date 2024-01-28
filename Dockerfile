@@ -2,7 +2,10 @@
 FROM python:3.9-slim
 
 # Copy the current working directory to the /app directory inside the container
-COPY . /app
+# COPY . /app
+COPY src/. /app
+COPY entrypoint.sh /app
+COPY requirements.txt /app
 
 # Set /app as the working directory for the Python container
 WORKDIR /app
