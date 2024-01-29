@@ -225,7 +225,7 @@ def generate_trades(stocks_file: str):
     # Feed all timely headlines into model
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
 
-    result_df.to_csv("recommendation_test.csv")  # for testing
+    result_df.to_csv("s3://llm-trader/data/recommendation_test.csv")  # for testing
 
     rec_df = result_df[["ticker", "recommendation"]]
 
