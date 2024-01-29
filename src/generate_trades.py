@@ -203,6 +203,7 @@ def after_hours(df: pd.DataFrame):
 
 
 def generate_trades(stocks_file: str):
+    print('welcome to generate_trades!')
     # Load list of stocks
     df = pd.read_csv(stocks_file)
 
