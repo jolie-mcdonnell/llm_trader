@@ -2,7 +2,8 @@
 FROM public.ecr.aws/lambda/python:3.9
 
 # Copy the content of your Lambda function code into the container
-COPY . /var/task/
+COPY . /var/task
+COPY src/ /var/task
 
 # Set the working directory
 WORKDIR /var/task
