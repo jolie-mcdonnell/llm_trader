@@ -126,7 +126,6 @@ def pre_market(df: pd.DataFrame):
     # If news is positive, buy then sell (long)
     # If news is negative, sell then buy (short)
     # Write first trades to trades_morning.csv
-    # Write second trades to trades_afternoon.csv
     morning_trades = pd.concat(
         [
             pd.DataFrame(
