@@ -130,7 +130,7 @@ def execute_trades_handler(trades_file):
     pd.DataFrame(
         columns=[
             "ticker",
-            "strategy",
+            "side",
         ]
     ).to_csv("out.csv", index=False)
 
