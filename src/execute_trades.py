@@ -175,6 +175,5 @@ def execute_trades():
         # raise Exception("Execution time not in morning or afternoon window")
 
 
-# # TODO: delete this
-# if __name__ == "__main__":
-#     execute_trades()
+if __name__ == "__main__":
+    execute_trades()
