@@ -70,7 +70,10 @@ jobs:
         run: pip install -r requirements.txt  
 
       - name: Execute trades
-        run: python src/execute_trades.py  
+        run: python src/execute_trades.py
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
 
       - name: Commit changes
         run: |
