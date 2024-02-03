@@ -79,7 +79,7 @@ jobs:
         env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-
+#
       - name: Commit changes
         run: |
           git config --global user.name "github-actions[bot]"
