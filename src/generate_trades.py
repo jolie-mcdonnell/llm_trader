@@ -22,10 +22,12 @@ TRADING_CATEGORIES = {
     },
 }
 
-S3_BUCKET = "llm-trader"
+# S3_BUCKET = "llm-trader"
 
-TRADES_MORNING_FILE = f"s3://{S3_BUCKET}/data/trades_morning.csv"
-TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
+# TRADES_MORNING_FILE = f"s3://{S3_BUCKET}/data/trades_morning.csv"
+# TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
+TRADES_MORNING_FILE = "data/trades_morning.csv"
+TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 
 # List of dfs containing headlines for each stock
 RESULT_LIST = []
@@ -203,7 +205,7 @@ def after_hours(df: pd.DataFrame):
 
 
 def generate_trades(stocks_file: str):
-    print('welcome to generate_trades!')
+    print("welcome to generate_trades!")
     # Load list of stocks
     df = pd.read_csv(stocks_file)
 
@@ -225,7 +227,8 @@ def generate_trades(stocks_file: str):
     # Feed all timely headlines into model
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
 
-    result_df.to_csv("s3://llm-trader/data/recommendation_test.csv")  # for testing
+    # result_df.to_csv("s3://llm-trader/data/recommendation_test.csv")  # for testing
+    result_df.to_csv("data/recommendation_test.csv")  # for testing
 
     rec_df = result_df[["ticker", "recommendation"]]
 
@@ -245,8 +248,9 @@ def generate_trades(stocks_file: str):
         after_hours(avg_df)
 
 
-if __name__ == '__main__':
-    generate_trades("s3://llm-trader/data/stocks_info_test.csv")
+if __name__ == "__main__":
+    # generate_trades("s3://llm-trader/data/stocks_info_test.csv")
+    generate_trades("data/stocks_info_test.csv")
 
 # trade_category = 1
 # move yesterday's _afternoon trades to today's afternoon trades
