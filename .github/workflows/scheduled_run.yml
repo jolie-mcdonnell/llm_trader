@@ -5,9 +5,9 @@ on:
     branches:
       - main
   schedule:
-    # Run every weekday at 9:20am EST and 4:00pm EST
-    - cron: '20 13 * * 1-5'
-    - cron: '00 20 * * 1-5'
+    # Run every weekday at 5:50am EST and 3:50pm EST
+    - cron: '50 10 * * 1-5'
+    - cron: '50 19 * * 1-5'
 
 jobs:
   generate_trades:
