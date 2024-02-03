@@ -1,9 +1,12 @@
 name: Scheduled Run
 
 on:
-  schedule:
-    # Run every weekday at 4:06 PM EST
-    - cron: '6 20 * * 1-5'
+  push:
+    branches:
+      - main
+#   schedule:
+#     # Run every weekday at 4:06 PM EST
+#     - cron: '6 20 * * 1-5'
 
 jobs:
   generate_trades:
