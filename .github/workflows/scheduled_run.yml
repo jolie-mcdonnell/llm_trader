@@ -31,16 +31,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt  
 
-    #   - name: Generate trades
-    #     run: python src/generate_trades.py  
+      - name: Generate trades
+        run: python src/generate_trades.py  
 
-    #   - name: Commit changes
-    #     run: |
-    #       git config --global user.name ${{ secrets.USER_NAME }}
-    #       git config --global user.email ${{ secrets.USER_EMAIL }}
-    #       git add data/trades_afternoon.csv data/trades_morning.csv
-    #       git commit -m "Scheduled updates to trades_afternoon.csv and trades_morning.csv"
-    #       git push
+      - name: Commit changes
+        run: |
+          git config --global user.name ${{ secrets.USER_NAME }}
+          git config --global user.email ${{ secrets.USER_EMAIL }}
+          git add data/trades_afternoon.csv data/trades_morning.csv
+          git commit -m "Scheduled updates to trades_afternoon.csv and trades_morning.csv"
+          git push
 
   execute_trades:
     runs-on: ubuntu-latest
@@ -65,13 +65,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt  
 
-    #   - name: Execute trades
-    #     run: python src/execute_trades.py  
+      - name: Execute trades
+        run: python src/execute_trades.py  
 
-    #   - name: Commit changes
-    #     run: |
-    #       git config --global user.name ${{ secrets.USER_NAME }}
-    #       git config --global user.email ${{ secrets.USER_EMAIL }}
-    #       git add data/executed_trades.csv
-    #       git commit -m "Scheduled updates to executed_trades.csv"
-    #       git push
+      - name: Commit changes
+        run: |
+          git config --global user.name ${{ secrets.USER_NAME }}
+          git config --global user.email ${{ secrets.USER_EMAIL }}
+          git add data/executed_trades.csv
+          git commit -m "Scheduled updates to executed_trades.csv"
+          git push
