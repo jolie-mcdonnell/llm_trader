@@ -146,8 +146,8 @@ def execute_trades():
     tz = timezone("EST")
     current_time = datetime.now(tz).time()
 
-    # if is_weekend_or_holiday():
-    #     raise Exception("Cannot trade on weekend or holiday")
+    if is_weekend_or_holiday():
+        raise Exception("Cannot trade on weekend or holiday")
 
     # if current execution time is in window #1, read in morning trades file
     if (current_time >= datetime.strptime("05:50:00", "%H:%M:%S").time()) & (
@@ -171,8 +171,8 @@ def execute_trades():
     else:
         print("time window test")
         execute_trades_handler(TRADES_TEST_FILE)
-        print("Exception will be raised")
-        # raise Exception("Execution time not in morning or afternoon window")
+        # print("Exception will be raised")
+        raise Exception("Execution time not in morning or afternoon window")
 
 
 if __name__ == "__main__":
