@@ -249,7 +249,9 @@ def generate_trades(stocks_file: str):
 
 if __name__ == "__main__":
     # generate_trades("s3://llm-trader/data/stocks_info_test.csv")
-    generate_trades("data/stocks_info_test.csv")
+    # generate_trades("data/stocks_info_test.csv") # for testing
+    generate_trades("data/stocks_info.csv")
+
 
 # trade_category = 1
 # move yesterday's _afternoon trades to today's afternoon trades
