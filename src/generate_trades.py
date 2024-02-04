@@ -240,5 +240,5 @@ def generate_trades(stocks_file: str):
 
 
 if __name__ == "__main__":
-    generate_trades("data/stocks_info_test.csv")  # for testing
-    # generate_trades("data/stocks_info_3.csv")
+    # generate_trades("data/stocks_info_test.csv")  # for testing
+    generate_trades("data/stocks_info_3.csv")
