@@ -139,8 +139,8 @@ def pre_market(df: pd.DataFrame):
         ]
     )
     morning_trades.to_csv(TRADES_MORNING_FILE, mode="a", header=False, index=False)
-    with open(TRADES_MORNING_FILE, "a") as f:
-        f.write("\n")
+    # with open(TRADES_MORNING_FILE, "a") as f:
+    #     f.write("\n")
 
 
 def during_market(df: pd.DataFrame):
@@ -169,8 +169,8 @@ def during_market(df: pd.DataFrame):
         ]
     )
     afternoon_trades.to_csv(TRADES_AFTERNOON_FILE, mode="a", header=False, index=False)
-    with open(TRADES_MORNING_FILE, "a") as f:
-        f.write("\n")
+    # with open(TRADES_MORNING_FILE, "a") as f:
+    #     f.write("\n")
 
 
 def after_hours(df: pd.DataFrame):
@@ -199,8 +199,8 @@ def after_hours(df: pd.DataFrame):
         ]
     )
     morning_trades.to_csv(TRADES_MORNING_FILE, mode="a", header=False, index=False)
-    with open(TRADES_MORNING_FILE, "a") as f:
-        f.write("\n")
+    # with open(TRADES_MORNING_FILE, "a") as f:
+    #     f.write("\n")
 
 
 def generate_trades(stocks_file: str):
