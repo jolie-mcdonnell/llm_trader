@@ -127,7 +127,10 @@ def execute_trades_handler(trades_file):
             "ticker",
             "side",
         ]
-    ).to_csv("out.csv", index=False)
+    ).to_csv(trades_file, index=False)
+    # add newline
+    with open(trades_file, "a") as f:
+        f.write("\n")
 
 
 def execute_trades():
