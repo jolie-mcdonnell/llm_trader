@@ -250,7 +250,7 @@ def generate_trades(stocks_file: str):
 if __name__ == "__main__":
     # generate_trades("s3://llm-trader/data/stocks_info_test.csv")
     # generate_trades("data/stocks_info_test.csv") # for testing
-    generate_trades("data/stocks_info.csv")
+    generate_trades("data/stocks_info_3.csv")
 
 
 # trade_category = 1
