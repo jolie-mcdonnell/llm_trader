@@ -167,11 +167,14 @@ def execute_trades():
         execute_trades_handler(TRADES_AFTERNOON_FILE)
 
     else:
-        print("time window test")
-        execute_trades_handler(TRADES_TEST_FILE)
-        # print("Exception will be raised")
+        # print("time window test") # for testing
+        # execute_trades_handler(TRADES_TEST_FILE) # for testing
+        # print("Exception will be raised") # for testing
         raise Exception("Execution time not in morning or afternoon window")
 
 
 if __name__ == "__main__":
-    execute_trades()
+    try:
+        execute_trades()
+    except Exception as e:
+        print(f"Error executing trades: {str(e)}")
