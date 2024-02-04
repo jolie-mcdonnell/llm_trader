@@ -22,10 +22,7 @@ TRADING_CATEGORIES = {
     },
 }
 
-# S3_BUCKET = "llm-trader"
 
-# TRADES_MORNING_FILE = f"s3://{S3_BUCKET}/data/trades_morning.csv"
-# TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 
@@ -226,7 +223,6 @@ def generate_trades(stocks_file: str):
     # Feed all timely headlines into model
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
 
-    # result_df.to_csv("s3://llm-trader/data/recommendation_test.csv")  # for testing
     result_df.to_csv("data/recommendation_test.csv")  # for testing
 
     rec_df = result_df[["ticker", "recommendation"]]
@@ -248,9 +244,8 @@ def generate_trades(stocks_file: str):
 
 
 if __name__ == "__main__":
-    # generate_trades("s3://llm-trader/data/stocks_info_test.csv")
-    # generate_trades("data/stocks_info_test.csv") # for testing
-    generate_trades("data/stocks_info_3.csv")
+    generate_trades("data/stocks_info_test.csv")  # for testing
+    # generate_trades("data/stocks_info_3.csv")
 
 
 # trade_category = 1

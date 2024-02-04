@@ -7,11 +7,6 @@ import pandas_market_calendars as mcal
 from pytz import timezone
 
 
-# S3_BUCKET = "llm-trader"
-
-# TRADES_MORNING_FILE = f"s3://{S3_BUCKET}/data/trades_morning.csv"
-# TRADES_AFTERNOON_FILE = f"s3://{S3_BUCKET}data/trades_afternoon.csv"
-# TRADES_TEST_FILE = f"s3://{S3_BUCKET}/data/trades_morning_test.csv"
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 TRADES_TEST_FILE = "data/trades_morning_test.csv"
