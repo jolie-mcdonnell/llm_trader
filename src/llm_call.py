@@ -14,7 +14,6 @@ def generate_stock_recommendation(headline: str, company_name: str, term: str):
     :param term: The time frame of the recommendation
     :return: A recommendation
     """
-    # Set your OpenAI API key
 
     client = OpenAI()
     OpenAI.api_key = os.getenv("OPENAI_API_KEY")
@@ -24,7 +23,7 @@ def generate_stock_recommendation(headline: str, company_name: str, term: str):
 
     # Call OpenAI API
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # Use the chat model
+        model="gpt-3.5-turbo",
         messages=[
             {
                 "role": "system",
@@ -41,22 +40,8 @@ def generate_stock_recommendation(headline: str, company_name: str, term: str):
 
     # Replace "YES" with 1, "NO" with -1, and "UNKNOWN" with 0
     if result_text == "YES":
-        result = 1
+        return 1
     elif result_text == "NO":
-        result = -1
+        return -1
     else:
-        result = 0
-    # print(headline)
-    # print(company_name)
-    # print(result_text)
-    # print(result)
-    # Return the recommendation
-    return result
-
-
-# # for testing
-# headline = "Lead Levels in Children’s Applesauce May Be Traced to Cinnamon Additive"
-# company_name = "Apple"
-# term = "short"
-# result = generate_stock_recommendation(headline, company_name, term)
-# print(f"Recommendation: {result}")
+        return 0

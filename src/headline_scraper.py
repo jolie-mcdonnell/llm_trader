@@ -4,8 +4,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-# Alpaca has a news API: https://docs.alpaca.markets/docs/news-api which would be faster than scraping,
-# but  the news is from Benzinga only
+# Alpaca has a news API: https://docs.alpaca.markets/docs/news-api which would be faster than scraping
 
 google_business = {
     "name": "Google Business News",
@@ -98,22 +97,3 @@ def scrape_headlines(
         return pd.DataFrame(matching_headlines)
     else:
         print("Failed to retrieve the webpage. Status code:", response.status_code)
-
-
-# use this to test
-# print(scrape_headlines("AAPL", "Apple", ["AAPL", "Apple"]))
-
-# company_keywords = [
-#     ["Apple", "AAPL", "iPhone", "iPad", "Mac", "iCloud"],
-#     ["Microsoft", "MSFT", "Windows", "Office", "Azure"],
-#     ["Amazon", "AMZN", "AWS", "Alexa"],
-#     ["Alphabet", "GOOGL", "GOOG", "Google", "YouTube"],
-#     ["Meta", "META", "Facebook", "Instagram"],
-#     ["Tesla", "TSLA", "Elon Musk"],
-# ]
-
-
-# for site in sites:
-#     for company in company_keywords:
-#         headlines = scrape_headlines(site, company)
-#         print(headlines)

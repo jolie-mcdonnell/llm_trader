@@ -116,13 +116,12 @@ def row_to_model(row: pd.Series):
 def pre_market(df: pd.DataFrame):
     """
     The pre_market function takes in a dataframe of sentiments and generates trades for each stock.
-    It then writes the trades to the trades_morning.csv and trades_afternoon.csv files.
+    It then writes the trades to the trades_morning.csv file.
 
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
-    # If news is positive, buy then sell (long)
-    # If news is negative, sell then buy (short)
-    # Write first trades to trades_morning.csv
+    # If news is positive, long the stock
+    # If news is negative, short the stock
     morning_trades = pd.concat(
         [
             pd.DataFrame(
@@ -151,9 +150,8 @@ def during_market(df: pd.DataFrame):
 
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
-    # If news is positive, buy then sell (long)
-    # If news is negative, sell then buy (short)
-    # Write first trades to trades_afternoon.csv
+    # If news is positive, long the stock
+    # If news is negative, short the stock
     afternoon_trades = pd.concat(
         [
             pd.DataFrame(
@@ -182,9 +180,8 @@ def after_hours(df: pd.DataFrame):
 
     :param df: pd.DataFrame: Pass the dataframe of sentiments to the function
     """
-    # If news is positive, buy then sell (long)
-    # If news is negative, sell then buy (short)
-    # Write first trades to trades_morning.csv
+    # If news is positive, long the stock
+    # If news is negative, short the stock
     morning_trades = pd.concat(
         [
             pd.DataFrame(
@@ -216,7 +213,6 @@ def generate_trades(stocks_file: str):
 
     # Concatenate all dataframes into one
     result_df = pd.concat(RESULT_LIST, ignore_index=True)
-    # result_df.to_csv("headline_test.csv") # for testing
 
     # Get trading category
     trade_category = get_trading_category()
@@ -224,12 +220,8 @@ def generate_trades(stocks_file: str):
     # Filter headlines based on trade category
     result_df = headline_filter(result_df, trade_category)
 
-    result_df.to_csv("headline_test.csv")  # for testing
-
     # Feed all timely headlines into model
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
-
-    result_df.to_csv("data/recommendation_test.csv")  # for testing
 
     rec_df = result_df[["ticker", "recommendation"]]
 
@@ -237,8 +229,6 @@ def generate_trades(stocks_file: str):
     avg_df = rec_df.groupby("ticker").mean()
     # reshape to [ticker, recommendation]
     avg_df = avg_df.reset_index()
-
-    avg_df.to_csv("sentiment_test.csv")  # for testing
 
     # Generate trades for each stock
     if trade_category == 1:
@@ -252,27 +242,3 @@ def generate_trades(stocks_file: str):
 if __name__ == "__main__":
     generate_trades("data/stocks_info_test.csv")  # for testing
     # generate_trades("data/stocks_info_3.csv")
-
-
-# trade_category = 1
-# move yesterday's _afternoon trades to today's afternoon trades
-# transfer_afternoon_trades()
-# get headlines from midnight to 9:30-x AM EST - starting with 8AM
-# feed headlines into model, get average sentiment
-# insert trades for today at open (trades_morning.csv) and today at close (trades_afternoon.csv)
-# if positive, buy then sell (long)
-# if negative, sell then buy (short)
-
-# trade_category = 2
-# get headlines from 9:30 AM EST to 4:00-x PM EST - starting with 2:30PM
-# feed headlines into model, get average sentiment
-# insert trades for today at close (trades_afternoon.csv) and  at close (trades__afternoon.csv)
-# if positive, buy then sell (long)
-# if negative, sell then buy (short)
-
-# trade_category = 3
-# get headlines from 4:00 PM EST to midnight - starting with 10:30PM
-# feed headlines into model, get average sentiment
-# insert trades for  at open (trades_morning.csv) and  at close (trades__afternoon.csv)
-# if positive, buy then sell (long)
-# if negative, sell then buy (short)
