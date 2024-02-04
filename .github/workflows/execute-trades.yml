@@ -1,0 +1,40 @@
+name: Execute Trades
+
+on: 
+  workflow_run:
+    workflows: ["Generate Trades"]
+    types:
+      - completed
+  schedule:
+    # run every weekday at 9:20am EST and 3:50pm EST
+    - cron: '20 13 * * 1-5'
+    - cron: '50 19 * * 1-5'
+
+jobs:
+  execute_trades:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x  
+
+      - name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt  
+
+      - name: Execute trades
+        run: python src/execute_trades.py
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
