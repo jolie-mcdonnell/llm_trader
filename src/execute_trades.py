@@ -141,15 +141,15 @@ def execute_trades():
     the positions will be updated to reflect any changes made during execution.
     """
 
-    tz = timezone("EST")
+    tz = timezone("America/New_York")
     current_time = datetime.now(tz).time()
 
     if is_weekend_or_holiday():
         raise Exception("Cannot trade on weekend or holiday")
 
     # if current execution time is in window #1, read in morning trades file
-    if (current_time >= datetime.strptime("05:50:00", "%H:%M:%S").time()) & (
-        current_time <= datetime.strptime("06:00:00", "%H:%M:%S").time()
+    if (current_time >= datetime.strptime("09:20:00", "%H:%M:%S").time()) & (
+        current_time <= datetime.strptime("09:30:00", "%H:%M:%S").time()
     ):
         print("time window 1")
         execute_trades_handler(TRADES_MORNING_FILE)
