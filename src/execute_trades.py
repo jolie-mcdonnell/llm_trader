@@ -148,16 +148,18 @@ def execute_trades():
         raise Exception("Cannot trade on weekend or holiday")
 
     # if current execution time is in window #1, read in morning trades file
-    if (current_time >= datetime.strptime("09:20:00", "%H:%M:%S").time()) & (
-        current_time <= datetime.strptime("09:30:00", "%H:%M:%S").time()
-    ):
+    # if (current_time >= datetime.strptime("09:20:00", "%H:%M:%S").time()) & (
+    #     current_time <= datetime.strptime("09:30:00", "%H:%M:%S").time()
+    # ):
+    if (current_time <= datetime.strptime("12:00:00", "%H:%M:%S").time()):
         print("time window 1")
         execute_trades_handler(TRADES_MORNING_FILE)
 
     # if current execution time is in window #2, read in afternoon trades file
-    elif (current_time >= datetime.strptime("15:50:00", "%H:%M:%S").time()) & (
-        current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
-    ):
+    # elif (current_time >= datetime.strptime("15:50:00", "%H:%M:%S").time()) & (
+    #     current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
+    # ):
+elif (current_time >= datetime.strptime("12:00:00", "%H:%M:%S").time()):
         print("time window 2")
 
         # Close all open positions
