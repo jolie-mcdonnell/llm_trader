@@ -6,7 +6,7 @@ on:
 #     types:
 #       - completed
   schedule:
-    # run every weekday at 9:20am EST and 3:50pm EDT
+    # run every weekday at 9:20am EDT and 3:50pm EDT
     - cron: '20 14 * * 1-5'
     - cron: '50 20 * * 1-5'
 
