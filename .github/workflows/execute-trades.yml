@@ -1,13 +1,13 @@
 name: Execute Trades
 
 on: 
-#   workflow_run:
-#     workflows: ["Generate Trades"]
-#     types:
-#       - completed
-  push:
-    branches:
-      - main
+  # workflow_run:
+  #   workflows: ["Generate Trades"]
+  #   types:
+  #     - completed
+  # push:
+  #   branches:
+  #     - main
   schedule:
     # run every weekday at 9:20am EDT and 3:50pm EDT
     - cron: '20 14 * * 1-5'
