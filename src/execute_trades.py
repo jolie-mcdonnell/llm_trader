@@ -159,7 +159,7 @@ def execute_trades():
     # elif (current_time >= datetime.strptime("15:50:00", "%H:%M:%S").time()) & (
     #     current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
     # ):
-elif (current_time >= datetime.strptime("12:00:00", "%H:%M:%S").time()):
+    elif (current_time >= datetime.strptime("12:00:00", "%H:%M:%S").time()):
         print("time window 2")
 
         # Close all open positions
