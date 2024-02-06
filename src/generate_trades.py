@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas as pd
 from pytz import timezone
 
-from headline_scraper import scrape_headlines
+from headline_scraper import scrape_all_headlines
 from llm_call import generate_stock_recommendation
 
 # 1 is pre-market, 2 is during market hours, 3 is after hours
@@ -26,25 +26,38 @@ TRADING_CATEGORIES = {
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 
+# df of all headlines
+ALL_HEADLINES = pd.DataFrame()
+
 # List of dfs containing headlines for each stock
 RESULT_LIST = []
 
 
-def process_row(
+def search_headlines(
     row: pd.Series,
 ):
     """
-    The process_row function takes in a row from the dataframe and scrapes the headlines for that company.
+    The search_headlines function takes in a row from the dataframe and finds matching headlines for that company.
     It then returns a dictionary with all of the information about that company's news.
 
     :param row: pd.Series: Pass the row of data from the dataframe to the function
     """
-    result = scrape_headlines(
-        row["ticker"],
-        row["company"],
-        row["keywords"].strip("[]").replace("'", "").split(", "),
-    )
-    RESULT_LIST.append(result)
+    matching_headlines = []
+    for headline in ALL_HEADLINES:
+        for keyword in headline["keywords"]:
+            if len(keyword) < 3:
+                continue
+            if keyword in headline["headline"].lower():
+                matching_headlines.append(
+                    {
+                        "ticker": row["ticker"],
+                        "company": row["company"],
+                        "headline": headline["headline"],
+                        "datetime": headline["datetime"],
+                    }
+                )
+                break
+    RESULT_LIST.append(pd.DataFrame(matching_headlines))
 
 
 def get_trading_category():
@@ -52,7 +65,7 @@ def get_trading_category():
     The get_trading_category function gets the current trading category based on the current time.
     """
     # Get current time
-    tz = timezone("EST")
+    tz = timezone("America/New_York")
     current_time = datetime.now(tz).time()
 
     # THIS IS A WEIRD WAY TO DO THIS
@@ -208,8 +221,11 @@ def generate_trades(stocks_file: str):
     # Load list of stocks
     df = pd.read_csv(stocks_file)
 
-    # Get all headlines for each stock
-    df.apply(process_row, axis=1)
+    # Get all headlines
+    ALL_HEADLINES = scrape_all_headlines()
+
+    # For each stock, search through all headlines
+    df.apply(search_headlines, axis=1)
 
     # Concatenate all dataframes into one
     result_df = pd.concat(RESULT_LIST, ignore_index=True)
