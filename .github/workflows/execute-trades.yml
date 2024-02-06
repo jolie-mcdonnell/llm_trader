@@ -50,7 +50,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Scheduled updates to trades_morning.csv and trades_afternoon.csv"
+            git commit -m "Removal of executed trades."
             git push
           fi
         env:
