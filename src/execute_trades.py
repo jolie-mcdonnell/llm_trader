@@ -47,7 +47,7 @@ def is_weekend_or_holiday():
     calendar = mcal.get_calendar(calendar_name)
 
     # Get today's date
-    tz = timezone("EST")
+    tz = timezone("America/New_York")
     today = datetime.now(tz).date()
 
     # Check if today is a weekend or a holiday
