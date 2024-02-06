@@ -97,3 +97,57 @@ def scrape_headlines(
         return pd.DataFrame(matching_headlines)
     else:
         print("Failed to retrieve the webpage. Status code:", response.status_code)
+
+
+def scrape_all_headlines():
+    sites = [google_business, google_tech]
+    for site in sites:
+        url = site["url"]
+        response = requests.get(url)
+        if response.status_code == 200:
+            # get the html content of the webpage
+            soup = BeautifulSoup(response.content, "html.parser")
+            # find all headline elements on the page
+            headline_elements = soup.find_all(attrs=site["headline_attrs"])
+            # create an empty list to store the headline info
+            headlines = []
+            # loop through headline elements and extract datetimes and descriptions
+            for h in headline_elements:
+                # get the headline
+                headline_text = h.text.strip()
+
+                # get the datetime
+                if site["date_attrs"] is None:
+                    # if no date element attributes are provided, null
+                    date = None
+                else:
+                    date_element = h.find_next(attrs=site["date_attrs"])
+                    if date_element:
+                        date_text = date_element["datetime"]
+                        dateUTC = datetime.datetime.strptime(
+                            date_text, "%Y-%m-%dT%H:%M:%SZ"
+                        )
+                        date = dateUTC - datetime.timedelta(hours=5)
+                    else:
+                        date = None
+
+                # get the description
+                if site["description_attrs"] is None:
+                    description_text = "Description not found"
+                else:
+                    description = h.find_next(attrs=site["description_attrs"])
+                    if description:
+                        description_text = description.text.strip()
+                    else:
+                        description_text = "Description not found"
+
+                # add the headline info to the list of matching headlines
+                headlines.append(
+                    {
+                        "headline": headline_text,
+                        "datetime": date,
+                    }
+                )
+            return pd.DataFrame(headlines)
+        else:
+            print("Failed to retrieve the webpage. Status code:", response.status_code)
