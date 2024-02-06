@@ -129,8 +129,8 @@ def execute_trades_handler(trades_file):
         ]
     ).to_csv(trades_file, index=False)
     # add newline
-    with open(trades_file, "a") as f:
-        f.write("\n")
+    # with open(trades_file, "a") as f:
+    #     f.write("\n")
 
 
 def execute_trades():
@@ -151,7 +151,7 @@ def execute_trades():
     # if (current_time >= datetime.strptime("09:20:00", "%H:%M:%S").time()) & (
     #     current_time <= datetime.strptime("09:30:00", "%H:%M:%S").time()
     # ):
-    if (current_time <= datetime.strptime("12:00:00", "%H:%M:%S").time()):
+    if current_time <= datetime.strptime("12:00:00", "%H:%M:%S").time():
         print("time window 1")
         execute_trades_handler(TRADES_MORNING_FILE)
 
@@ -159,7 +159,7 @@ def execute_trades():
     # elif (current_time >= datetime.strptime("15:50:00", "%H:%M:%S").time()) & (
     #     current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
     # ):
-    elif (current_time >= datetime.strptime("12:00:00", "%H:%M:%S").time()):
+    elif current_time >= datetime.strptime("12:00:00", "%H:%M:%S").time():
         print("time window 2")
 
         # Close all open positions
