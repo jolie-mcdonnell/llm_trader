@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 
 import pandas as pd
 from pytz import timezone
@@ -217,17 +218,22 @@ def after_hours(df: pd.DataFrame):
 
 
 def generate_trades(stocks_file: str):
-    print("welcome to generate_trades!")
     # Load list of stocks
     df = pd.read_csv(stocks_file)
 
     # Get all headlines
+    print("\U0001F30E scraping headlines:", end=" ")
+    scrape_start = time.time()
     all_headlines = scrape_all_headlines()
+    print("%.1f seconds" % (time.time() - scrape_start))
 
     # For each stock, search through all headlines
+    print("\U0001F50D searching headlines for stocks:", end=" ")
+    search_start = time.time()
     # df.apply(search_headlines, axis=1)
     for index, row in df.iterrows():
         search_headlines(row, all_headlines)
+    print("%.1f seconds" % (time.time() - search_start))
 
     # Concatenate all dataframes into one
     result_df = pd.concat(RESULT_LIST, ignore_index=True)
@@ -236,29 +242,37 @@ def generate_trades(stocks_file: str):
     trade_category = get_trading_category()
 
     # Filter headlines based on trade category
+    print("\U0001F552 filtering headlines by time:", end=" ")
     result_df = headline_filter(result_df, trade_category)
+    print("%.1f seconds" % (time.time() - search_start))
 
     # Feed all timely headlines into model
+    print("\U0001F916 feeding headlines into model:", end=" ")
+    # print("...feeding headlines into model:", end=" ")
+    model_start = time.time()
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
-
     rec_df = result_df[["ticker", "recommendation"]]
-
     # Get average sentiment in model output, group by ticker
     avg_df = rec_df.groupby("ticker").mean()
     # reshape to [ticker, recommendation]
     avg_df = avg_df.reset_index()
+    print("%.1f seconds" % (time.time() - model_start))
 
-    [print(row) for row in avg_df.itertuples()]
-
-    # Generate trades for each stock
+    # Write trades
+    print("\U0001f4dd writing trades:", end=" ")
+    write_start = time.time()
     if trade_category == 1:
         pre_market(avg_df)
     elif trade_category == 2:
         during_market(avg_df)
     elif trade_category == 3:
         after_hours(avg_df)
+    print("%.1f seconds" % (time.time() - write_start))
 
 
 if __name__ == "__main__":
-    # generate_trades("data/stocks_info_test.csv")  # for testing
-    generate_trades("data/stocks_info_3.csv")
+    print("welcome to generate_trades!")
+    start_time = time.time()
+    generate_trades("data/stocks_info_test.csv")  # for testing
+    # generate_trades("data/stocks_info_3.csv")
+    print(f"total time: {round(time.time() - start_time, 1)} seconds")
