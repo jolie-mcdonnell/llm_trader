@@ -131,16 +131,6 @@ def scrape_all_headlines():
                     else:
                         date = None
 
-                # get the description
-                if site["description_attrs"] is None:
-                    description_text = "Description not found"
-                else:
-                    description = h.find_next(attrs=site["description_attrs"])
-                    if description:
-                        description_text = description.text.strip()
-                    else:
-                        description_text = "Description not found"
-
                 # add the headline info to the list of matching headlines
                 headlines.append(
                     {
@@ -148,6 +138,6 @@ def scrape_all_headlines():
                         "datetime": date,
                     }
                 )
-            return pd.DataFrame(headlines)
+            return headlines
         else:
             print("Failed to retrieve the webpage. Status code:", response.status_code)
