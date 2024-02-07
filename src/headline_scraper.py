@@ -138,6 +138,6 @@ def scrape_all_headlines():
                         "datetime": date,
                     }
                 )
-            return headlines
+            return pd.DataFrame(headlines)
         else:
             print("Failed to retrieve the webpage. Status code:", response.status_code)
