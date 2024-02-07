@@ -247,6 +247,8 @@ def generate_trades(stocks_file: str):
     # reshape to [ticker, recommendation]
     avg_df = avg_df.reset_index()
 
+    [print(row) for row in avg_df.itertuples()]
+
     # Generate trades for each stock
     if trade_category == 1:
         pre_market(avg_df)
