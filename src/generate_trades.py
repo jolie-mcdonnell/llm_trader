@@ -34,7 +34,7 @@ RESULT_LIST = []
 
 def search_headlines(
     row: pd.Series,
-    all_headlines: list[dict[str, datetime]],
+    headlines: pd.DataFrame,
 ):
     """
     The search_headlines function takes in a row from the dataframe and finds matching headlines for that company.
@@ -43,7 +43,7 @@ def search_headlines(
     :param row: pd.Series: Pass the row of data from the dataframe to the function
     """
     matching_headlines = []
-    for headline in all_headlines:
+    for _, headline in headlines.iterrows():
         for keyword in row["keywords"].strip("[]").replace("'", "").split(", "):
             if len(keyword) < 3:
                 continue
@@ -219,35 +219,34 @@ def after_hours(df: pd.DataFrame):
 
 def generate_trades(stocks_file: str):
     # Load list of stocks
-    df = pd.read_csv(stocks_file)
+    stocks = pd.read_csv(stocks_file)
 
     # Get all headlines
-    print("\U0001F30E scraping headlines:", end=" ")
+    print("\U0001F30E scraping headlines:", end=" ", flush=True)
     scrape_start = time.time()
     all_headlines = scrape_all_headlines()
     print("%.1f seconds" % (time.time() - scrape_start))
-
-    # For each stock, search through all headlines
-    print("\U0001F50D searching headlines for stocks:", end=" ")
-    search_start = time.time()
-    # df.apply(search_headlines, axis=1)
-    for index, row in df.iterrows():
-        search_headlines(row, all_headlines)
-    print("%.1f seconds" % (time.time() - search_start))
-
-    # Concatenate all dataframes into one
-    result_df = pd.concat(RESULT_LIST, ignore_index=True)
 
     # Get trading category
     trade_category = get_trading_category()
 
     # Filter headlines based on trade category
-    print("\U0001F552 filtering headlines by time:", end=" ")
-    result_df = headline_filter(result_df, trade_category)
+    filter_start = time.time()
+    print("\U0001F552 filtering headlines by time:", end=" ", flush=True)
+    timely_headlines = headline_filter(all_headlines, trade_category)
+    print("%.1f seconds" % (time.time() - filter_start))
+
+    # For each stock, search through all headlines
+    print("\U0001F50D searching headlines for stocks:", end=" ", flush=True)
+    search_start = time.time()
+    stocks.apply(search_headlines, axis=1, args=(timely_headlines,))
     print("%.1f seconds" % (time.time() - search_start))
 
+    # Concatenate all dataframes into one
+    result_df = pd.concat(RESULT_LIST, ignore_index=True)
+
     # Feed all timely headlines into model
-    print("\U0001F916 feeding headlines into model:", end=" ")
+    print("\U0001F916 feeding headlines into model:", end=" ", flush=True)
     # print("...feeding headlines into model:", end=" ")
     model_start = time.time()
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
@@ -259,7 +258,7 @@ def generate_trades(stocks_file: str):
     print("%.1f seconds" % (time.time() - model_start))
 
     # Write trades
-    print("\U0001f4dd writing trades:", end=" ")
+    print("\U0001f4dd writing trades:", end=" ", flush=True)
     write_start = time.time()
     if trade_category == 1:
         pre_market(avg_df)
@@ -273,6 +272,6 @@ def generate_trades(stocks_file: str):
 if __name__ == "__main__":
     print("welcome to generate_trades!")
     start_time = time.time()
-    # generate_trades("data/stocks_info_test.csv")  # for testing
-    generate_trades("data/stocks_info_3.csv")
+    generate_trades("data/stocks_info_test.csv")  # for testing
+    # generate_trades("data/stocks_info_3.csv")
     print(f"total time: {round(time.time() - start_time, 1)} seconds")
