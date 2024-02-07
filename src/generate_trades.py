@@ -122,7 +122,8 @@ def row_to_model(row: pd.Series):
     term = "short"
 
     # Get recommendation
-    return generate_stock_recommendation(headline, company_name, term)
+    rec = generate_stock_recommendation(headline, company_name, term)
+    return rec
 
 
 def pre_market(df: pd.DataFrame):
