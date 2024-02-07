@@ -227,6 +227,8 @@ def generate_trades(stocks_file: str):
     all_headlines = scrape_all_headlines()
     print("%.1f seconds" % (time.time() - scrape_start))
 
+    # all_headlines.to_csv("temp/all_headlines.csv", index=False) # for testing
+
     # Get trading category
     trade_category = get_trading_category()
 
@@ -235,6 +237,8 @@ def generate_trades(stocks_file: str):
     print("\U0001F552 filtering headlines by time:", end=" ", flush=True)
     timely_headlines = headline_filter(all_headlines, trade_category)
     print("%.1f seconds" % (time.time() - filter_start))
+
+    # timely_headlines.to_csv("temp/timely_headlines.csv", index=False) # for testing
 
     # For each stock, search through all headlines
     print("\U0001F50D searching headlines for stocks:", end=" ", flush=True)
@@ -245,17 +249,22 @@ def generate_trades(stocks_file: str):
     # Concatenate all dataframes into one
     result_df = pd.concat(RESULT_LIST, ignore_index=True)
 
+    # result_df.to_csv("temp/result_df.csv", index=False) # for testing
+
     # Feed all timely headlines into model
     print("\U0001F916 feeding headlines into model:", end=" ", flush=True)
-    # print("...feeding headlines into model:", end=" ")
     model_start = time.time()
+
     result_df["recommendation"] = result_df.apply(row_to_model, axis=1)
     rec_df = result_df[["ticker", "recommendation"]]
+    # rec_df.to_csv("temp/rec_df.csv", index=False) # for testing
     # Get average sentiment in model output, group by ticker
     avg_df = rec_df.groupby("ticker").mean()
     # reshape to [ticker, recommendation]
     avg_df = avg_df.reset_index()
     print("%.1f seconds" % (time.time() - model_start))
+
+    # avg_df.to_csv("temp/avg_df.csv", index=False) # for testing
 
     # Write trades
     print("\U0001f4dd writing trades:", end=" ", flush=True)
