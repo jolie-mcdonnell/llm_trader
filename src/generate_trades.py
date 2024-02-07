@@ -26,8 +26,6 @@ TRADING_CATEGORIES = {
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 
-# df of all headlines
-ALL_HEADLINES = pd.DataFrame()
 
 # List of dfs containing headlines for each stock
 RESULT_LIST = []
@@ -35,6 +33,7 @@ RESULT_LIST = []
 
 def search_headlines(
     row: pd.Series,
+    all_headlines: list[dict[str, datetime]],
 ):
     """
     The search_headlines function takes in a row from the dataframe and finds matching headlines for that company.
@@ -43,11 +42,11 @@ def search_headlines(
     :param row: pd.Series: Pass the row of data from the dataframe to the function
     """
     matching_headlines = []
-    for headline in ALL_HEADLINES:
-        for keyword in headline["keywords"]:
+    for headline in all_headlines:
+        for keyword in row["keywords"].strip("[]").replace("'", "").split(", "):
             if len(keyword) < 3:
                 continue
-            if keyword in headline["headline"].lower():
+            if keyword.lower() in headline["headline"].lower():
                 matching_headlines.append(
                     {
                         "ticker": row["ticker"],
@@ -222,10 +221,12 @@ def generate_trades(stocks_file: str):
     df = pd.read_csv(stocks_file)
 
     # Get all headlines
-    ALL_HEADLINES = scrape_all_headlines()
+    all_headlines = scrape_all_headlines()
 
     # For each stock, search through all headlines
-    df.apply(search_headlines, axis=1)
+    # df.apply(search_headlines, axis=1)
+    for index, row in df.iterrows():
+        search_headlines(row, all_headlines)
 
     # Concatenate all dataframes into one
     result_df = pd.concat(RESULT_LIST, ignore_index=True)
