@@ -161,3 +161,8 @@ cython_debug/
 headline_test.csv
 recommendation_test.csv
 sentiment_test.csv
+temp/all_headlines.csv
+temp/avg_df.csv
+temp/rec_df.csv
+temp/result_df.csv
+temp/timely_headlines.csv
