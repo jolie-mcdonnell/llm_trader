@@ -144,6 +144,8 @@ def execute_trades():
     tz = timezone("America/New_York")
     current_time = datetime.now(tz).time()
 
+    print(current_time.strftime("%H:%M:%S"))
+
     if is_weekend_or_holiday():
         raise Exception("Cannot trade on weekend or holiday")
 
