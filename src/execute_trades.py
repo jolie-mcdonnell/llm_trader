@@ -10,10 +10,13 @@ from pytz import timezone
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 TRADES_TEST_FILE = "data/trades_morning_test.csv"
+BUYING_POWER = 300.0
 
 # Set Alpaca API key and secret
-API_KEY = os.getenv("ALPACA_API_KEY")
-API_SECRET = os.getenv("ALPACA_SECRET_KEY")
+# API_KEY = os.getenv("ALPACA_API_KEY")
+API_KEY = "PKEPBYP8XA81OPE7WZKP"
+# API_SECRET = os.getenv("ALPACA_SECRET_KEY")
+API_SECRET = "VciBvvcTVn0RyjXOrjNn3iojqU41OcJEg7K0JH39"
 
 # Create an Alpaca API connection
 API = tradeapi.REST(
@@ -27,10 +30,6 @@ API = tradeapi.REST(
 # Orders on Alpaca: https://docs.alpaca.markets/docs/orders-at-alpaca
 # Short selling rules: https://docs.alpaca.markets/docs/margin-and-short-selling
 # Fractional trading: https://docs.alpaca.markets/docs/fractional-trading
-
-
-# TODO: Count number of positions in the current window and spread the buying power evenly across them
-# When we implement short selling, we'll need to be sure we keep enough buying power to cover the shorts
 
 
 def is_weekend_or_holiday():
@@ -58,7 +57,7 @@ def is_weekend_or_holiday():
     return is_weekend or is_holiday
 
 
-def execute_trade(ticker: str, side):
+def execute_trade(ticker: str, side: str, num_shares: float):
     """
     The execute_trade function takes in a ticker symbol, trade side (buy or sell).
     It then checks the available buying power to ensure there's enough for the trade. If so, it executes
@@ -68,30 +67,8 @@ def execute_trade(ticker: str, side):
     :param side: Determine whether to buy or sell the stock
     """
 
-    # Get account information to check available balance
-    # account_info = API.get_account()
-    # buying_power = float(account_info.buying_power)
-
-    # # Validate if there's enough buying power for the trade
-    # if side == "buy" and dollar_amount > buying_power:
-    #     return "Not enough buying power to execute the buy trade."
-
     # Execute the trade
     try:
-        # # Get the last trade information
-        # last_trade = API.get_latest_trade(ticker)
-
-        # # Calculate limit price with adjustments
-        # if side == "buy":
-        #     num_shares = dollar_amount / float(last_trade.price)
-        # elif side == "sell":
-        #     num_shares = round(dollar_amount / float(last_trade.price), 0)
-        # else:
-        #     raise Exception("Invalid trade side. Please use 'buy' or 'sell'.")
-
-        # Buy/sell 1 at a time for simplicity
-        num_shares = 1
-
         # Submit the order
         API.submit_order(
             symbol=ticker,
@@ -106,7 +83,104 @@ def execute_trade(ticker: str, side):
         print(f"Error executing the trade: {str(e)}")
 
 
-def execute_trades_handler(trades_file):
+def get_last_trade_price(ticker: str):
+    """
+    The get_last_trade_price function takes a ticker symbol as input and returns the last trade price for that stock.
+
+    :param ticker: str: Specify the ticker of the stock to get
+    :return: The last trade price for a given ticker
+    """
+
+    try:
+        # Get the last trade information
+        last_trade = API.get_latest_trade(ticker)
+        API.get_asset(ticker).fractionable
+
+        # Extract the last trade price
+        last_trade_price = last_trade.price
+
+        return last_trade_price
+
+    except Exception as e:
+        print(f"Error getting last trade price for {ticker}: {str(e)}")
+        return None
+
+
+def fractionable(ticker: str):
+    """
+    The fractionable function takes a ticker symbol as an argument and returns whether or not the asset is fractionable.
+        This function is used to determine if we can buy/sell partial shares of a stock.
+
+    :param ticker: Specify the ticker of the asset
+    :return: A boolean value, true or false
+    """
+
+    print(ticker, API.get_asset(ticker).fractionable)
+    return API.get_asset(ticker).fractionable
+
+
+def get_num_shares(trades_df: pd.DataFrame):
+    """
+    The get_num_shares function takes in a trades_df and returns the same dataframe with an additional column, num_shares.
+    The num_shares column is calculated by first splitting the trades into buy and sell orders. The buying power per share is then calculated as BUYING_POWER / number of shares to be bought (len(trades)).
+    For each sell order, we check if it's last trade price is less than or equal to our buying power per share. If so, we add that stock to our list of stocks that can be sold for cash. We then update our total buying power by subtracting the sum
+
+    :param trades_df:Pass in a dataframe of trades
+    :return: A dataframe with the number of shares to buy or sell for each ticker
+    """
+    global BUYING_POWER
+
+    buying_power_per_share = BUYING_POWER / len(trades_df)
+
+    trades_df["fractionable"] = trades_df.ticker.apply(fractionable)
+
+    # split into buy and sell df
+    trades_df_non_fractionable = trades_df[
+        (trades_df.side == "sell") | (trades_df.fractionable == False)
+    ]
+    trades_df_fractionable = trades_df[
+        (trades_df.side == "buy") & (trades_df.fractionable)
+    ]
+
+    # get cost of a share and subset sell df to shares we can afford
+
+    trades_df_non_fractionable["last_trade_price"] = (
+        trades_df_non_fractionable.ticker.apply(get_last_trade_price)
+    )
+    trades_df_non_fractionable = trades_df_non_fractionable[
+        trades_df_non_fractionable.last_trade_price <= buying_power_per_share
+    ]
+
+    # update buying power for fractionable orders
+    BUYING_POWER = BUYING_POWER - trades_df_non_fractionable.last_trade_price.sum()
+    buying_power_per_share = BUYING_POWER / (len(trades_df_fractionable))
+    print(
+        f"Buying power after sell orders: {BUYING_POWER:.2f}, ${buying_power_per_share:.2f} per share"
+    )
+
+    # drop last trade price column
+    trades_df_non_fractionable = trades_df_non_fractionable.drop(
+        ["last_trade_price"], axis=1
+    )
+
+    # set num_shares for all remaining non fractional orders to 1
+    trades_df_non_fractionable["num_shares"] = 1
+
+    # compute num shares for remaining orders
+    trades_df_fractionable["last_trade_price"] = trades_df_fractionable.ticker.apply(
+        get_last_trade_price
+    )
+    trades_df_fractionable["num_shares"] = trades_df_fractionable.apply(
+        lambda x: buying_power_per_share / x.last_trade_price, axis=1
+    )
+    trades_df_fractionable = trades_df_fractionable.drop(["last_trade_price"], axis=1)
+
+    return pd.concat(
+        [trades_df_non_fractionable, trades_df_fractionable], ignore_index=True
+    )
+
+
+def execute_trades_handler(trades_file: str):
     """
     The execute_trades_handler function takes in a trades_file, which is a csv file containing the following columns:
         ticker - The stock symbol of the security to be traded.
@@ -118,8 +192,10 @@ def execute_trades_handler(trades_file):
         subset="ticker", keep="last"
     )  # drop duplicate recommendations keeping latest
 
+    trades_df = get_num_shares(trades_df)
+
     # execute trades
-    trades_df.apply(lambda x: execute_trade(x.ticker, x.side), axis=1)
+    trades_df.apply(lambda x: execute_trade(x.ticker, x.side, x.num_shares), axis=1)
 
     # clear out trades df
     pd.DataFrame(
@@ -128,9 +204,6 @@ def execute_trades_handler(trades_file):
             "side",
         ]
     ).to_csv(trades_file, index=False)
-    # add newline
-    # with open(trades_file, "a") as f:
-    #     f.write("\n")
 
 
 def execute_trades():
@@ -169,9 +242,6 @@ def execute_trades():
         execute_trades_handler(TRADES_AFTERNOON_FILE)
 
     else:
-        # print("time window test") # for testing
-        # execute_trades_handler(TRADES_TEST_FILE) # for testing
-        # print("Exception will be raised") # for testing
         raise Exception("Execution time not in morning or afternoon window")
 
 
