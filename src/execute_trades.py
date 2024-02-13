@@ -10,7 +10,7 @@ from pytz import timezone
 TRADES_MORNING_FILE = "data/trades_morning.csv"
 TRADES_AFTERNOON_FILE = "data/trades_afternoon.csv"
 TRADES_TEST_FILE = "data/trades_morning_test.csv"
-BUYING_POWER = 300.0
+BUYING_POWER = 1000.0
 
 # Set Alpaca API key and secret
 # API_KEY = os.getenv("ALPACA_API_KEY")
