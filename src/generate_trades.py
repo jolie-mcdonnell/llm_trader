@@ -281,6 +281,7 @@ def generate_trades(stocks_file: str):
 if __name__ == "__main__":
     print("welcome to generate_trades!")
     start_time = time.time()
+    print(start_time.strftime("%H:%M:%S"))
     # generate_trades("data/stocks_info_test.csv")  # for testing
     generate_trades("data/stocks_info_3.csv")
     print(f"total time: {round(time.time() - start_time, 1)} seconds")
