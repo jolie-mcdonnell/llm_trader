@@ -13,10 +13,8 @@ TRADES_TEST_FILE = "data/trades_morning_test.csv"
 BUYING_POWER = 1000.0
 
 # Set Alpaca API key and secret
-# API_KEY = os.getenv("ALPACA_API_KEY")
-API_KEY = "PKEPBYP8XA81OPE7WZKP"
-# API_SECRET = os.getenv("ALPACA_SECRET_KEY")
-API_SECRET = "VciBvvcTVn0RyjXOrjNn3iojqU41OcJEg7K0JH39"
+API_KEY = os.getenv("ALPACA_API_KEY")
+API_SECRET = os.getenv("ALPACA_SECRET_KEY")
 
 # Create an Alpaca API connection
 API = tradeapi.REST(
@@ -66,6 +64,7 @@ def execute_trade(ticker: str, side: str, num_shares: float):
     :param ticker: Specify the stock ticker symbol
     :param side: Determine whether to buy or sell the stock
     """
+    print(ticker, side, num_shares)
 
     # Execute the trade
     try:
@@ -115,8 +114,11 @@ def fractionable(ticker: str):
     :return: A boolean value, true or false
     """
 
-    print(ticker, API.get_asset(ticker).fractionable)
-    return API.get_asset(ticker).fractionable
+    # print(ticker, API.get_asset(ticker).fractionable)
+    try:
+        return API.get_asset(ticker).fractionable
+    except:
+        return None
 
 
 def get_num_shares(trades_df: pd.DataFrame):
@@ -133,6 +135,7 @@ def get_num_shares(trades_df: pd.DataFrame):
     buying_power_per_share = BUYING_POWER / len(trades_df)
 
     trades_df["fractionable"] = trades_df.ticker.apply(fractionable)
+    trades_df.dropna(axis=1, how="all")
 
     # split into buy and sell df
     trades_df_non_fractionable = trades_df[
@@ -246,7 +249,8 @@ def execute_trades():
 
 
 if __name__ == "__main__":
-    try:
-        execute_trades()
-    except Exception as e:
-        print(f"Error executing trades: {str(e)}")
+    # try:
+    #     execute_trades()
+    # except Exception as e:
+    #     print(f"Error executing trades: {str(e)}")
+    execute_trades()
