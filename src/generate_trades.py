@@ -99,8 +99,9 @@ def headline_filter(df: pd.DataFrame, trade_category: int):
     :param trade_category: int: Pass the trade category to the function
     """
     # filter headlines based on trade category
+    tz = timezone("America/New_York")
     df = df[
-        (df["datetime"].dt.date == datetime.now().date())
+        (df["datetime"].dt.date == datetime.now(tz).date())
         & (df["datetime"].dt.time >= TRADING_CATEGORIES[trade_category]["start"])
         & (df["datetime"].dt.time <= TRADING_CATEGORIES[trade_category]["end"])
     ]
