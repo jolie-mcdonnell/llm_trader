@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 
 import pandas as pd
@@ -218,6 +218,10 @@ def after_hours(df: pd.DataFrame):
     #     f.write("\n")
 
 
+def to_datetime(timestamp):
+    return datetime.utcfromtimestamp(timestamp) - timedelta(hours=5)
+
+
 def generate_trades(stocks_file: str):
     # Load list of stocks
     stocks = pd.read_csv(stocks_file)
@@ -227,8 +231,7 @@ def generate_trades(stocks_file: str):
     scrape_start = time.time()
     all_headlines = scrape_all_headlines()
     print("%.1f seconds" % (time.time() - scrape_start))
-
-    # all_headlines.to_csv("temp/all_headlines.csv", index=False) # for testing
+    all_headlines.to_csv("temp/all_headlines.csv", index=False)  # for testing
 
     # Get trading category
     trade_category = get_trading_category()
@@ -250,7 +253,14 @@ def generate_trades(stocks_file: str):
     # Concatenate all dataframes into one
     result_df = pd.concat(RESULT_LIST, ignore_index=True)
 
-    # result_df.to_csv("temp/result_df.csv", index=False) # for testing
+    # Load in Finnhub headlines
+    finnhub_df = pd.read_csv("data/finnhub_headlines.csv")
+    finnhub_df["datetime"] = finnhub_df["datetime"].apply(to_datetime)
+    finnhub_df_timely = headline_filter(finnhub_df, trade_category)
+
+    # Concatenate Finnhub headlines with manually scraped headlines
+    result_df = pd.concat([result_df, finnhub_df_timely], ignore_index=True)
+    # result_df.to_csv("temp/result_df.csv", index=False)  # for testing
 
     # Feed all timely headlines into model
     print("\U0001F916 feeding headlines into model:", end=" ", flush=True)

@@ -6,3 +6,4 @@ bs4
 openai
 alpaca_trade_api
 pandas_market_calendars
+finnhub-python
