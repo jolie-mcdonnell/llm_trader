@@ -249,8 +249,8 @@ def execute_trades():
 
 
 if __name__ == "__main__":
-    # try:
-    #     execute_trades()
-    # except Exception as e:
-    #     print(f"Error executing trades: {str(e)}")
-    execute_trades()
+    try:
+        execute_trades()
+    except Exception as e:
+        print(f"Error executing trades: {str(e)}")
+    # execute_trades()
