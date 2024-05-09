@@ -231,7 +231,7 @@ def generate_trades(stocks_file: str):
     scrape_start = time.time()
     all_headlines = scrape_all_headlines()
     print("%.1f seconds" % (time.time() - scrape_start))
-    all_headlines.to_csv("temp/all_headlines.csv", index=False)  # for testing
+    # all_headlines.to_csv("temp/all_headlines.csv", index=False)  # for testing
 
     # Get trading category
     trade_category = get_trading_category()
