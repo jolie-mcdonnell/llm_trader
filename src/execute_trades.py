@@ -232,6 +232,11 @@ def execute_trades():
         print("time window 1")
         execute_trades_handler(TRADES_MORNING_FILE)
 
+        # Clear out finnhub headlines
+        pd.DataFrame(columns=["ticker", "company", "headline", "datetime"]).to_csv(
+            "data/finnhub_headlines.csv", index=False
+        )
+
     # if current execution time is in window #2, read in afternoon trades file
     elif (current_time >= datetime.strptime("15:40:00", "%H:%M:%S").time()) & (
         current_time <= datetime.strptime("16:00:00", "%H:%M:%S").time()
@@ -243,6 +248,11 @@ def execute_trades():
 
         # Execute afternoon trades
         execute_trades_handler(TRADES_AFTERNOON_FILE)
+
+        # Clear out finnhub headlines
+        pd.DataFrame(columns=["ticker", "company", "headline", "datetime"]).to_csv(
+            "data/finnhub_headlines.csv", index=False
+        )
 
     else:
         raise Exception("Execution time not in morning or afternoon window")
