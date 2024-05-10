@@ -40,7 +40,7 @@ if __name__ == "__main__":
     stocks.drop("result", axis=1, inplace=True)
     stocks = stocks.dropna()
 
-    stocks.to_csv("data/finnhub_headlines.csv", mode="a", index=False)
+    stocks.to_csv("data/finnhub_headlines.csv", mode="a", header=False, index=False)
 
     end_time = time.time()
 
