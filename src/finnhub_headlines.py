@@ -6,9 +6,13 @@ import pandas as pd
 import datetime as dt
 
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY")
+FINNHUB_API_KEY_2 = os.getenv("FINNHUB_API_KEY_2")
 
-# Initialize the Finnhub client with your API key
+
+# Initialize the Finnhub clients with your API key
 finnhub_client = finnhub.Client(api_key=FINNHUB_API_KEY)
+finnhub_client_2 = finnhub.Client(api_key=FINNHUB_API_KEY_2)
+
 today = dt.datetime.today().date()
 COUNTER = 0
 
@@ -24,8 +28,17 @@ def get_headlines(ticker):
         print(COUNTER)
         return headlines
     except:
-        time.sleep(5)
-        get_headlines(ticker)
+        try:
+            # Fetch news headlines for the ticker from Finnhub API
+            news = finnhub_client_2.company_news(symbol=ticker, _from=today, to=today)
+            # Extract headlines from the response
+            headlines = [(article["headline"], article["datetime"]) for article in news]
+            COUNTER += 1
+            print(COUNTER)
+            return headlines
+        except:
+            time.sleep(5)
+            get_headlines(ticker)
 
 
 if __name__ == "__main__":
