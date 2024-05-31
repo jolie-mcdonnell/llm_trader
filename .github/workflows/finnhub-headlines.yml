@@ -2,13 +2,13 @@ name: Finnhub Headlines
 
 on:
   schedule:
-    # run every weekday at 9:10am and 3:40pm and 11:40pm
+    # run every weekday at 10:00am and 2:00pm and 10:00pm
     # EST (UTC-5)
-    # - cron: '10 14 * * 1-5'
-    # - cron: '40 20 * * 1-5'
-    # - cron: '40 04 * * 1-5'
+    # - cron: '15 15 * * 1-5'
+    # - cron: '00 19 * * 1-5'
+    # - cron: '00 03 * * 1-5'
     # EDT (UTC-4) in ~March-November
-    - cron: '00 12 * * 1-5'
+    - cron: '15 14 * * 1-5'
     - cron: '00 18 * * 1-5'
     - cron: '00 02 * * 1-5'
   workflow_dispatch:
@@ -46,6 +46,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull
           git add data/finnhub_headlines.csv 
           if git diff --staged --quiet; then
             echo "No changes to commit"

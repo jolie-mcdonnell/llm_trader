@@ -11,10 +11,10 @@ from llm_call import generate_stock_recommendation
 TRADING_CATEGORIES = {
     1: {
         "start": datetime.strptime("00:00:00", "%H:%M:%S").time(),
-        "end": datetime.strptime("09:30:00", "%H:%M:%S").time(),
+        "end": datetime.strptime("11:30:00", "%H:%M:%S").time(),
     },
     2: {
-        "start": datetime.strptime("09:30:00", "%H:%M:%S").time(),
+        "start": datetime.strptime("11:30:00", "%H:%M:%S").time(),
         "end": datetime.strptime("16:00:00", "%H:%M:%S").time(),
     },
     3: {
