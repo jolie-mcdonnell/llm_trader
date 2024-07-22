@@ -15,7 +15,7 @@ on:
   
 
 jobs:
-  generate_trades:
+  generate_finnhub_headlines:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,10 +37,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt  
 
-      - name: Generate trades
+      - name: Generate finnhub headlines
         run: python src/finnhub_headlines.py
         env:
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          FINNHUB_API_KEY_2: ${{ secrets.FINNHUB_API_KEY_2 }}
+          FINNHUB_API_KEY_3: ${{ secrets.FINNHUB_API_KEY_3 }}
+          FINNHUB_API_KEY_4: ${{ secrets.FINNHUB_API_KEY_4 }}
 
       - name: Commit changes
         run: |
