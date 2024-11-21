@@ -69,6 +69,10 @@ To get started with **llm_trader**, follow these steps:
 4. **Automation with GitHub Actions**  
    The entire process is automated using **GitHub Actions**, which triggers the tasks throughout the day.
 
-   This automation ensures that the system stays up-to-date with the latest market data and continuously executes trades according to the evolving market conditions. In practice, the algorithm did not perform nearly as well as reported in the article, but it was a fun project in algorithmic trading!
+   This automation ensures that the system stays up-to-date with the latest market data and continuously executes trades according to the evolving market conditions.
+
+
+### **Results**
+In practice, the algorithm did not perform nearly as well as reported in the article, but it was a fun project in algorithmic trading!
 
 
