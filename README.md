@@ -2,6 +2,9 @@
 
 **llm_trader** is an automated stock trading program that leverages the power of large language models (LLMs), like GPT, to make real-time investment decisions based on recent news. The program scrapes stock-related news headlines from **Google News** and **Finnhub**, processes them using GPT to generate short-term investment strategies (Buy, Sell, Do Nothing), and then executes the trades through the **Alpaca API**.
 
+The trading strategy is based on [Can ChatGPT Forecast Stock Price Movements? Return Predictability and Large Language Models](https://arxiv.org/abs/2304.07619) by Alejandro Lopez-Lira and Yuehua Tang. 
+
+
 ### **Features**
 - Scrapes recent stock-related news headlines from **Google News** and **Finnhub**.
 - Uses **OpenAI GPT** to analyze the news and generate an investment strategy (Buy, Sell, or Do Nothing).
