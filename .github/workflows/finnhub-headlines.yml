@@ -1,16 +1,16 @@
 name: Finnhub Headlines
 
 on:
-  schedule:
+  # schedule:
     # run every weekday at 10:00am and 2:00pm and 10:00pm
     # EST (UTC-5)
     # - cron: '15 15 * * 1-5'
     # - cron: '00 19 * * 1-5'
     # - cron: '00 03 * * 1-5'
     # EDT (UTC-4) in ~March-November
-    - cron: '15 14 * * 1-5'
-    - cron: '00 18 * * 1-5'
-    - cron: '00 02 * * 1-5'
+    # - cron: '15 14 * * 1-5'
+    # - cron: '00 18 * * 1-5'
+    # - cron: '00 02 * * 1-5'
   workflow_dispatch:
   
 
