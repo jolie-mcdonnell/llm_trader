@@ -273,3 +273,6 @@ RES,buy
 THR,buy
 AMPS,sell
 AIN,buy
+ICE,sell
+PRI,sell
+PRO,sell
