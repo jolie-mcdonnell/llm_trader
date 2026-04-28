@@ -4915,3 +4915,10 @@ WAL,sell
 XPER,sell
 YUM,sell
 ZS,sell
+COMP,buy
+EXP,buy
+IFF,buy
+OUT,buy
+TRU,buy
+UTL,buy
+FUN,sell
