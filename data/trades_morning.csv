@@ -325,3 +325,7 @@ RUN,buy
 DIN,sell
 GES,sell
 LIN,sell
+WSR,buy
+ING,sell
+SAFE,sell
+SON,sell
