@@ -5021,3 +5021,6 @@ PAYS,buy
 RES,buy
 TECH,buy
 TME,buy
+LIN,sell
+NDAQ,sell
+TECH,sell
