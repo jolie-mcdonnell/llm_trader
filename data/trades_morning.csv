@@ -388,3 +388,12 @@ SES,sell
 SHO,sell
 STAG,sell
 TRI,sell
+ALL,buy
+ALLY,buy
+DAN,buy
+ICE,buy
+PAR,buy
+SUM,buy
+INVE,sell
+NVEC,sell
+STRA,sell
