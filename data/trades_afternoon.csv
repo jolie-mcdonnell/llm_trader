@@ -5107,3 +5107,9 @@ ATI,sell
 CAL,sell
 DEA,sell
 NAT,sell
+AAL,buy
+AIR,buy
+ICE,buy
+NDAQ,buy
+FOLD,sell
+MAN,sell
