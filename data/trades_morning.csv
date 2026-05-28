@@ -445,3 +445,6 @@ HOPE,buy
 MAR,buy
 ALLY,buy
 SNOW,buy
+RES,buy
+ICE,sell
+TER,sell
