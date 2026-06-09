@@ -632,3 +632,7 @@ PRO,buy
 RES,buy
 ROP,buy
 XPO,buy
+ALL,sell
+FUN,sell
+LOW,sell
+SHO,sell
