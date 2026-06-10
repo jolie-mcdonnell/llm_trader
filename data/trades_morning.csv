@@ -641,3 +641,10 @@ EXC,sell
 LIN,sell
 RES,sell
 SMCI,sell
+MOD,buy
+ORA,buy
+PAY,buy
+SOL,buy
+APG,sell
+DOW,sell
+PEN,sell
