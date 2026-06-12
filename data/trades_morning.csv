@@ -659,3 +659,5 @@ MERC,sell
 OUT,sell
 ALL,buy
 TRI,buy
+COR,buy
+AIR,sell
