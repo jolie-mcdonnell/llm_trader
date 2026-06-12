@@ -657,3 +657,5 @@ COR,sell
 ING,sell
 MERC,sell
 OUT,sell
+ALL,buy
+TRI,buy
