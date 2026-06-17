@@ -5488,3 +5488,10 @@ MOD,sell
 TER,sell
 TIMB,sell
 WOR,sell
+AIT,buy
+HOUS,buy
+PAR,buy
+UBER,buy
+DDL,sell
+LEA,sell
+MAR,sell
