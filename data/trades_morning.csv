@@ -852,3 +852,7 @@ WIT,buy
 INVE,sell
 NKE,sell
 SEE,sell
+ADV,buy
+MAR,buy
+NDAQ,buy
+TER,buy
