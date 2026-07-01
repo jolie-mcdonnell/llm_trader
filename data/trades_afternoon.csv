@@ -5602,3 +5602,5 @@ PAR,sell
 SES,sell
 DUK,sell
 OPEN,sell
+SES,buy
+XPER,sell
