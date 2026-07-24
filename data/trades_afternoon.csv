@@ -5677,3 +5677,5 @@ NAT,sell
 NDAQ,sell
 OMI,sell
 PAR,sell
+AGS,buy
+ICE,buy
