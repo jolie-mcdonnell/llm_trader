@@ -5679,3 +5679,7 @@ OMI,sell
 PAR,sell
 AGS,buy
 ICE,buy
+COMP,buy
+ICE,buy
+PRO,buy
+PUMP,buy
